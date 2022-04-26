@@ -2,7 +2,17 @@
 name = "bigc"
 version = "0.1.0"
 description = "Unofficial client for the BigCommerce API"
+license = "Proprietary"
 authors = ["Ryan Thomson <ryan@medshift.com>", "Dillon Hartley <dillon@medshift.com>", "Adam Walsh <adam@medshift.com>"]
+readme = "README.md"
+homepage = "https://github.com/MedShift/bigc"
+repository = "https://github.com/MedShift/bigc.git"
+keywords = ["bigcommerce", "api", "client"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
