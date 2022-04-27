@@ -2,7 +2,7 @@
 name = "bigc"
 version = "0.1.0"
 description = "Unofficial client for the BigCommerce API"
-license = "Proprietary"
+license = "MIT"
 authors = ["Ryan Thomson <ryan@medshift.com>", "Dillon Hartley <dillon@medshift.com>", "Adam Walsh <adam@medshift.com>"]
 readme = "README.md"
 homepage = "https://github.com/MedShift/bigc"
