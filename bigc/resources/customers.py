@@ -1,20 +1,22 @@
 from collections.abc import Iterator
-from typing import Any
+from typing import Any, Iterable
 from urllib.parse import urlparse, urlencode, urlunparse
 
-from bigc.exceptions import ResourceNotFoundError
 from bigc._client import BigCommerceV3APIClient
+from bigc.exceptions import ResourceNotFoundError
 
 
 class BigCommerceCustomersAPI:
     def __init__(self, store_hash: str, access_token: str):
         self._v3_client = BigCommerceV3APIClient(store_hash, access_token)
 
-    def all(self, *, include_formfields: bool = False) -> Iterator[dict]:
+    def all(self, *, id_in: Iterable[int] = None, include_formfields: bool = False) -> Iterator[dict]:
         """Return an iterator for all customers"""
         url_parts = urlparse('/customers')
 
         query_dict = {}
+        if id_in is not None:
+            query_dict['id:in'] = ','.join(map(str, id_in))
         if include_formfields:
             query_dict['include'] = 'formfields'
         url_parts = url_parts._replace(query=urlencode(query_dict))
