@@ -37,6 +37,10 @@ class BigCommerceCustomersAPI:
         except IndexError:
             raise ResourceNotFoundError()
 
+    def create(self, **kwargs):
+        """Create a single customer"""
+        return self._v3_client.request('POST', '/customers', json=[{**kwargs}])
+
     def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
         """Update a form field value for a single customer"""
         payload = [{
