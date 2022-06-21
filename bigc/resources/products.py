@@ -42,7 +42,7 @@ class BigCommerceProductsAPI:
 
         return self._v3_client.request('GET', urlunparse(url_parts))
 
-    def create(self, name: str, product_type: str, weight: float, price: float, **kwargs) -> dict:
+    def create(self, *, name: str, product_type: str, weight: float, price: float, **kwargs) -> dict:
         """Create a product"""
         payload = {
             'name': name,
