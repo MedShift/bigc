@@ -15,10 +15,11 @@ class BigCommerceCustomerGroupsAPI:
         """Get a specific customer group by its ID"""
         return self._v2_client.request('GET', f'/customer_groups/{customer_group_id}')
 
-    def create(self, *, name: str) -> dict:
+    def create(self, *, name: str, **kwargs) -> dict:
         """Create a customer group"""
         payload = {
             'name': name,
+            **kwargs
         }
         return self._v2_client.request('POST', '/customer_groups', json=payload)
 
