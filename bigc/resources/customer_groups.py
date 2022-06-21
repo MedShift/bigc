@@ -1,6 +1,6 @@
 from collections.abc import Iterator
 
-from bigc._client import BigCommerceV3APIClient
+from bigc._client import BigCommerceV2APIClient
 
 
 class BigCommerceCustomerGroupsAPI:
@@ -14,10 +14,6 @@ class BigCommerceCustomerGroupsAPI:
     def get(self, customer_group_id: int) -> dict:
         """Get a specific customer group by its ID"""
         return self._v2_client.request('GET', f'/customer_groups/{customer_group_id}')
-
-    def count(self) -> int:
-        """Get a count of all customer groups"""
-        return self._v2_client.request('GET', f'/customer_groups/count')
 
     def create(self, *, name: str) -> dict:
         """Create a customer group"""
