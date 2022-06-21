@@ -53,9 +53,9 @@ class BigCommerceProductsAPI:
         }
         return self._v3_client.request('POST', '/catalog/products', json=payload)
 
-    def update(self, product_id: int, **kwargs) -> dict:
+    def update(self, product_id: int, data: dict ) -> dict:
         """Update a specific product by its ID"""
-        return self._v3_client.request('PUT', f'/catalog/products/{product_id}', json=kwargs)
+        return self._v3_client.request('PUT', f'/catalog/products/{product_id}', json=data)
 
     def delete(self, product_id: int) -> dict:
         """Delete a specific product by its ID"""

@@ -24,9 +24,9 @@ class BigCommerceProductVariantsAPI:
         }
         return self._v3_client.request('POST', f'/catalog/products/{product_id}/variants', json=payload)
 
-    def update(self, product_id: int, variant_id: int, **kwargs) -> dict:
+    def update(self, product_id: int, variant_id: int, data: dict) -> dict:
         """Update a specific product variant by its ID"""
-        return self._v3_client.request('PUT', f'/catalog/products/{product_id}/variants/{variant_id}', json=kwargs)
+        return self._v3_client.request('PUT', f'/catalog/products/{product_id}/variants/{variant_id}', json=data)
 
     def delete(self, product_id: int, variant_id: int) -> dict:
         """Delete a specific product variant by its ID"""
