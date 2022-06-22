@@ -29,6 +29,8 @@ orders: list[dict] = list(bigcommerce.orders.all(customer_id=1))
 The following resources are currently supported:
 
 - `carts`
+- `categories`
+- `customer_groups`
 - `customers`
 - `orders`
 - `products`
