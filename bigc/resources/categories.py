@@ -15,12 +15,12 @@ class BigCommerceCategoriesAPI:
         """Get a specific category by its ID"""
         return self._v3_client.request('GET', f'/catalog/categories/{category_id}')
 
-    def create(self, *, name: str, is_visible: bool = True, parent_id: int = 0) -> dict:
+    def create(self, *, name: str, parent_id: int = 0, **kwargs) -> dict:
         """Create a category"""
         payload = {
             'name': name,
-            'is_visible': is_visible,
             'parent_id': parent_id,
+            **kwargs
         }
         return self._v3_client.request('POST', '/catalog/categories', json=payload)
 
