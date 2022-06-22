@@ -15,7 +15,7 @@ class BigCommerceProductVariantsAPI:
         """Get a specific product variant by ID"""
         return self._v3_client.request('GET', f'/catalog/products/{product_id}/variants/{variant_id}')
 
-    def create(self, *, product_id: int, sku: str, option_values: list[dict], **kwargs) -> dict:
+    def create(self, product_id: int, *, sku: str, option_values: list[dict], **kwargs) -> dict:
         """Create a product variant"""
         payload = {
             'sku': sku,
