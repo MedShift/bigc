@@ -41,3 +41,22 @@ class BigCommerceProductsAPI:
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         return self._v3_client.request('GET', urlunparse(url_parts))
+
+    def create(self, *, name: str, product_type: str, weight: float, price: float, **kwargs) -> dict:
+        """Create a product"""
+        payload = {
+            'name': name,
+            'type': product_type,
+            'weight': weight,
+            'price': price,
+            **kwargs,
+        }
+        return self._v3_client.request('POST', '/catalog/products', json=payload)
+
+    def update(self, product_id: int, data: dict) -> dict:
+        """Update a specific product by its ID"""
+        return self._v3_client.request('PUT', f'/catalog/products/{product_id}', json=data)
+
+    def delete(self, product_id: int) -> dict:
+        """Delete a specific product by its ID"""
+        return self._v3_client.request('DELETE', f'/catalog/products/{product_id}')
