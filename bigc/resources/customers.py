@@ -49,7 +49,7 @@ class BigCommerceCustomersAPI:
 
     def update(self, customer_id: int, data: dict) -> dict:
         """Update a specific customer by its ID"""
-        return self._v3_client.request('PUT', f'/customer/{customer_id}', json=data)
+        return self._v3_client.request('PUT', f'/customers/{customer_id}', json=data)
 
     def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
         """Update a form field value for a single customer"""
