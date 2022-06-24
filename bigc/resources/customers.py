@@ -47,6 +47,14 @@ class BigCommerceCustomersAPI:
         }
         return self._v3_client.request('POST', '/customers', json=[payload])[0]
 
+    def update(self, customer_id: int, data: dict) -> dict:
+        """Update a single customer"""
+        payload = {
+            'id': customer_id,
+            **data,
+        }
+        return self._v3_client.request('PUT', f'/customers', json=[payload])[0]
+
     def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
         """Update a form field value for a single customer"""
         payload = [{
