@@ -33,7 +33,6 @@ The following resources are currently supported:
 - `customer_groups`
 - `customers`
 - `orders`
-- `pricing`
 - `products`
 - `product_variants`
 - `webhooks`
