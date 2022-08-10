@@ -15,13 +15,18 @@ class BigCommerceCustomersAPI:
         """Return an iterator for all customers"""
         url_parts = urlparse('/customers')
 
+        include = []
         query_dict = {}
+
         if id_in is not None:
             query_dict['id:in'] = ','.join(map(str, id_in))
         if include_storecredit:
-            query_dict['include'] = 'storecredit'
+            include.append('storecredit')
         if include_formfields:
-            query_dict['include'] = 'formfields'
+            include.append('formfields')
+
+        if include:
+            query_dict['include'] = ','.join(include)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         return self._v3_client.paginated_request('GET', urlunparse(url_parts))
@@ -31,12 +36,16 @@ class BigCommerceCustomersAPI:
         """Get a specific customer by its ID"""
         url_parts = urlparse('/customers')
 
+        include = []
         query_dict = {'id:in': customer_id}
 
         if include_storecredit:
-            query_dict['include'] = 'storecredit'
+            include.append('storecredit')
         if include_formfields:
-            query_dict['include'] = 'formfields'
+            include.append('formfields')
+
+        if include:
+            query_dict['include'] = ','.join(include)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         try:
