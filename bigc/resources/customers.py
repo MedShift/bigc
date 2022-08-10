@@ -15,11 +15,12 @@ class BigCommerceCustomersAPI:
         """Return an iterator for all customers"""
         url_parts = urlparse('/customers')
 
-        include = []
         query_dict = {}
 
         if id_in is not None:
             query_dict['id:in'] = ','.join(map(str, id_in))
+
+        include = []
         if include_storecredit:
             include.append('storecredit')
         if include_formfields:
@@ -36,8 +37,8 @@ class BigCommerceCustomersAPI:
         """Get a specific customer by its ID"""
         url_parts = urlparse('/customers')
 
-        include = []
         query_dict = {'id:in': customer_id}
+        include = []
 
         if include_storecredit:
             include.append('storecredit')
