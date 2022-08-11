@@ -9,7 +9,7 @@ class BigCommerceWebhooksAPI:
 
     def all(self) -> Iterator[dict]:
         """Return an iterator for all webhooks"""
-        return self._v3_client.paginated_request('GET', '/hooks')
+        return self._v3_client.get_many('/hooks')
 
     def get(self, webhook_id: int) -> dict:
         """Get a specific webhook by its ID"""

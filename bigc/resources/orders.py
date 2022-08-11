@@ -20,7 +20,7 @@ class BigCommerceOrdersAPI:
             query_dict['customer_id'] = str(customer_id)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v2_client.paginated_request('GET', urlunparse(url_parts))
+        return self._v2_client.get_many(urlunparse(url_parts))
 
     def get(self, order_id: int) -> dict:
         """Get an order by its ID"""
@@ -28,7 +28,7 @@ class BigCommerceOrdersAPI:
 
     def all_products(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order products in an order"""
-        return self._v2_client.paginated_request('GET', f'/orders/{order_id}/products')
+        return self._v2_client.get_many(f'/orders/{order_id}/products')
 
     def get_product(self, order_id: int, product_id: int) -> dict:
         """Get a specific order product in an order by ID"""
@@ -40,7 +40,7 @@ class BigCommerceOrdersAPI:
             endpoint = f'/orders/{order_id}/payment_actions/refunds'
         else:
             endpoint = '/orders/payment_actions/refunds'
-        return self._v3_client.paginated_request('GET', endpoint)
+        return self._v3_client.get_many(endpoint)
 
     def get_refund(self, refund_id: int) -> dict:
         """Get a specific refund by its ID"""
@@ -51,7 +51,7 @@ class BigCommerceOrdersAPI:
 
     def all_shipping_addresses(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order shipping addresses in an order"""
-        return self._v2_client.paginated_request('GET', f'/orders/{order_id}/shipping_addresses')
+        return self._v2_client.get_many(f'/orders/{order_id}/shipping_addresses')
 
     def get_shipping_address(self, order_id: int, address_id: int) -> dict:
         """Get a specific shipping address in an order by ID"""

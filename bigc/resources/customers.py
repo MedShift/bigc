@@ -30,7 +30,7 @@ class BigCommerceCustomersAPI:
 
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v3_client.paginated_request('GET', urlunparse(url_parts))
+        return self._v3_client.get_many(urlunparse(url_parts))
 
     def get(self, customer_id: int, *, include_formfields: bool = False,
             include_storecredit: bool = False) -> dict:

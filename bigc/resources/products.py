@@ -23,7 +23,7 @@ class BigCommerceProductsAPI:
             query_dict['include'] = ','.join(include)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v3_client.paginated_request('GET', urlunparse(url_parts))
+        return self._v3_client.get_many(urlunparse(url_parts))
 
     def get(self, product_id: int, *, include_variants: bool = False, include_custom_fields: bool = False) -> dict:
         """Get a specific product by its ID"""

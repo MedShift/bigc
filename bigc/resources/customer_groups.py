@@ -9,7 +9,7 @@ class BigCommerceCustomerGroupsAPI:
 
     def all(self) -> Iterator[dict]:
         """Return an iterator for all customer groups"""
-        return self._v2_client.paginated_request('GET', '/customer_groups')
+        return self._v2_client.get_many('/customer_groups')
 
     def get(self, customer_group_id: int) -> dict:
         """Get a specific customer group by its ID"""

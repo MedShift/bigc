@@ -9,7 +9,7 @@ class BigCommerceCategoriesAPI:
 
     def all(self) -> Iterator[dict]:
         """Return an iterator for all categories"""
-        return self._v3_client.paginated_request('GET', '/catalog/categories')
+        return self._v3_client.get_many('/catalog/categories')
 
     def get(self, category_id: int) -> dict:
         """Get a specific category by its ID"""

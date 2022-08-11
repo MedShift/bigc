@@ -48,7 +48,7 @@ class BigCommerceRequestClient(ABC):
         return self.request('DELETE', *args, **kwargs)
 
     @abstractmethod
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
         pass
 
     @abstractmethod
@@ -97,7 +97,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v2/{path.lstrip('/')}"
 
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
@@ -110,7 +110,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
             query_dict['page'] = [str(cur_page)]
             paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
 
-            res_data = super().request(method, urlunparse(paged_url_parts), **kwargs)
+            res_data = super().get(urlunparse(paged_url_parts), **kwargs)
 
             # The API returns HTTP 204 (empty) past the last page
             if res_data is None:
@@ -135,7 +135,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         response = super().request(method, path, **kwargs)
         return None if response is None else response['data']
 
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
@@ -150,7 +150,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
             query_dict['page'] = [str(cur_page)]
             paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
 
-            res_data = super().request(method, urlunparse(paged_url_parts), **kwargs)
+            res_data = super().get(urlunparse(paged_url_parts), **kwargs)
 
             cur_page += 1
             num_pages = int(res_data['meta']['pagination']['total_pages'])
