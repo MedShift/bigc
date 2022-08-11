@@ -31,6 +31,22 @@ class BigCommerceRequestClient(ABC):
         else:
             self._handle_error(response)
 
+    def get(self, *args, **kwargs):
+        """Alias for ``request('GET', ...)``"""
+        return self.request('GET', *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        """Alias for ``request('POST', ...)``"""
+        return self.request('POST', *args, **kwargs)
+
+    def put(self, *args, **kwargs):
+        """Alias for ``request('PUT', ...)``"""
+        return self.request('PUT', *args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Alias for ``request('DELETE', ...)``"""
+        return self.request('DELETE', *args, **kwargs)
+
     @abstractmethod
     def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
         pass
