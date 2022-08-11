@@ -18,6 +18,7 @@ class BigCommerceRequestClient(ABC):
         self.access_token = access_token
 
     def request(self, method: str, path: str, **kwargs):
+        """Make a request to the BigCommerce API (uses Requests internally)"""
         kwargs['headers'] = self._get_standard_request_headers() | kwargs.get('headers', {})
 
         try:
@@ -49,6 +50,7 @@ class BigCommerceRequestClient(ABC):
 
     @abstractmethod
     def get_many(self, path: str, **kwargs) -> Generator:
+        """Make a request to a paginated BigCommerce API endpoint"""
         pass
 
     @abstractmethod
@@ -66,6 +68,7 @@ class BigCommerceRequestClient(ABC):
     def _handle_error(response: requests.Response) -> NoReturn:
         # TODO: Try to extract an error message from the response body
 
+        # Specific errors
         if response.status_code == 400:
             raise exceptions.BadRequestError()
         if response.status_code == 401:
@@ -83,6 +86,7 @@ class BigCommerceRequestClient(ABC):
         if response.status_code == 507:
             raise exceptions.PlanLimitExceededError()
 
+        # General errors
         if 300 <= response.status_code < 400:
             raise exceptions.BigCommerceRedirectionError()
         if 400 <= response.status_code < 500:
@@ -94,6 +98,8 @@ class BigCommerceRequestClient(ABC):
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):
+    """A client for directly calling BigCommerce v2 API endpoints"""
+
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v2/{path.lstrip('/')}"
 
@@ -127,6 +133,8 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
 
 
 class BigCommerceV3APIClient(BigCommerceRequestClient):
+    """A client for directly calling BigCommerce v3 API endpoints"""
+
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v3/{path.lstrip('/')}"
 
@@ -159,3 +167,9 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
                 raise TypeError(f"expected list, got {type(res_data['data']).__name__}")
 
             yield from res_data['data']
+
+
+class BigCommerceAPIClient:
+    def __init__(self, *args, **kwargs):
+        self.v2: BigCommerceV2APIClient = BigCommerceV2APIClient(*args, **kwargs)
+        self.v3: BigCommerceV3APIClient = BigCommerceV3APIClient(*args, **kwargs)

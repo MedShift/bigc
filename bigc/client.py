@@ -1,8 +1,11 @@
+from bigc._client import BigCommerceAPIClient
 from bigc.resources import *
 
 
 class BigCommerceAPI:
     def __init__(self, store_hash: str, access_token: str):
+        api_client = BigCommerceAPIClient(store_hash, access_token)
+
         self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(store_hash, access_token)
         self.categories: BigCommerceCategoriesAPI = BigCommerceCategoriesAPI(store_hash, access_token)
         self.customer_groups: BigCommerceCustomerGroupsAPI = BigCommerceCustomerGroupsAPI(store_hash, access_token)
@@ -11,3 +14,5 @@ class BigCommerceAPI:
         self.products: BigCommerceProductsAPI = BigCommerceProductsAPI(store_hash, access_token)
         self.product_variants: BigCommerceProductVariantsAPI = BigCommerceProductVariantsAPI(store_hash, access_token)
         self.webhooks: BigCommerceWebhooksAPI = BigCommerceWebhooksAPI(store_hash, access_token)
+
+        self.api: BigCommerceAPIClient = api_client
