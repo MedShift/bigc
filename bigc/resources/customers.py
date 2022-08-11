@@ -2,13 +2,13 @@ from collections.abc import Iterator
 from typing import Any, Iterable
 from urllib.parse import urlparse, urlencode, urlunparse
 
-from bigc._client import BigCommerceV3APIClient
+from bigc._client import BigCommerceAPIClient
 from bigc.exceptions import ResourceNotFoundError
 
 
 class BigCommerceCustomersAPI:
-    def __init__(self, store_hash: str, access_token: str):
-        self._v3_client = BigCommerceV3APIClient(store_hash, access_token)
+    def __init__(self, api_client: BigCommerceAPIClient):
+        self._api = api_client
 
     def all(self, *, id_in: Iterable[int] = None, include_formfields: bool = False,
             include_storecredit: bool = False) -> Iterator[dict]:
@@ -30,7 +30,7 @@ class BigCommerceCustomersAPI:
 
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v3_client.get_many(urlunparse(url_parts))
+        return self._api.v3.get_many(urlunparse(url_parts))
 
     def get(self, customer_id: int, *, include_formfields: bool = False,
             include_storecredit: bool = False) -> dict:
@@ -50,7 +50,7 @@ class BigCommerceCustomersAPI:
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         try:
-            return self._v3_client.get(urlunparse(url_parts))[0]
+            return self._api.v3.get(urlunparse(url_parts))[0]
         except IndexError:
             raise ResourceNotFoundError()
 
@@ -62,7 +62,7 @@ class BigCommerceCustomersAPI:
             'email': email,
             **kwargs,
         }
-        return self._v3_client.post('/customers', json=[payload])[0]
+        return self._api.v3.post('/customers', json=[payload])[0]
 
     def update(self, customer_id: int, data: dict) -> dict:
         """Update a single customer"""
@@ -70,7 +70,7 @@ class BigCommerceCustomersAPI:
             'id': customer_id,
             **data,
         }
-        return self._v3_client.put(f'/customers', json=[payload])[0]
+        return self._api.v3.put(f'/customers', json=[payload])[0]
 
     def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
         """Update a form field value for a single customer"""
@@ -79,4 +79,4 @@ class BigCommerceCustomersAPI:
             'name': field_name,
             'value': value,
         }]
-        return self._v3_client.put('/customers/form-field-values', json=payload)[0]
+        return self._api.v3.put('/customers/form-field-values', json=payload)[0]

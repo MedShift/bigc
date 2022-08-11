@@ -6,13 +6,13 @@ class BigCommerceAPI:
     def __init__(self, store_hash: str, access_token: str):
         api_client = BigCommerceAPIClient(store_hash, access_token)
 
-        self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(store_hash, access_token)
-        self.categories: BigCommerceCategoriesAPI = BigCommerceCategoriesAPI(store_hash, access_token)
-        self.customer_groups: BigCommerceCustomerGroupsAPI = BigCommerceCustomerGroupsAPI(store_hash, access_token)
-        self.customers: BigCommerceCustomersAPI = BigCommerceCustomersAPI(store_hash, access_token)
-        self.orders: BigCommerceOrdersAPI = BigCommerceOrdersAPI(store_hash, access_token)
-        self.products: BigCommerceProductsAPI = BigCommerceProductsAPI(store_hash, access_token)
-        self.product_variants: BigCommerceProductVariantsAPI = BigCommerceProductVariantsAPI(store_hash, access_token)
-        self.webhooks: BigCommerceWebhooksAPI = BigCommerceWebhooksAPI(store_hash, access_token)
+        self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(api_client)
+        self.categories: BigCommerceCategoriesAPI = BigCommerceCategoriesAPI(api_client)
+        self.customer_groups: BigCommerceCustomerGroupsAPI = BigCommerceCustomerGroupsAPI(api_client)
+        self.customers: BigCommerceCustomersAPI = BigCommerceCustomersAPI(api_client)
+        self.orders: BigCommerceOrdersAPI = BigCommerceOrdersAPI(api_client)
+        self.products: BigCommerceProductsAPI = BigCommerceProductsAPI(api_client)
+        self.product_variants: BigCommerceProductVariantsAPI = BigCommerceProductVariantsAPI(api_client)
+        self.webhooks: BigCommerceWebhooksAPI = BigCommerceWebhooksAPI(api_client)
 
         self.api: BigCommerceAPIClient = api_client
