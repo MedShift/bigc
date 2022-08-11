@@ -1,4 +1,4 @@
-from bigc._client import BigCommerceAPIClient
+from bigc.api_client import BigCommerceAPIClient
 from bigc.resources import *
 
 

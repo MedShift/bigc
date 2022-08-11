@@ -2,7 +2,7 @@ from collections.abc import Iterator
 from typing import Any, Iterable
 from urllib.parse import urlparse, urlencode, urlunparse
 
-from bigc._client import BigCommerceAPIClient
+from bigc.api_client import BigCommerceAPIClient
 from bigc.exceptions import ResourceNotFoundError
 
 

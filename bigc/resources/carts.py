@@ -1,7 +1,7 @@
 from typing import Union
 from uuid import UUID
 
-from bigc._client import BigCommerceAPIClient
+from bigc.api_client import BigCommerceAPIClient
 
 UUIDLike = Union[UUID, str]
 

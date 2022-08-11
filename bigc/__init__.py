@@ -1,1 +1,1 @@
-from .client import BigCommerceAPI
+from .api import BigCommerceAPI

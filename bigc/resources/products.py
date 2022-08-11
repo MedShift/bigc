@@ -1,7 +1,7 @@
 from collections.abc import Iterator
 from urllib.parse import urlparse, urlencode, urlunparse
 
-from bigc._client import BigCommerceAPIClient
+from bigc.api_client import BigCommerceAPIClient
 
 
 class BigCommerceProductsAPI:
