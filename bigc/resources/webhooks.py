@@ -13,7 +13,7 @@ class BigCommerceWebhooksAPI:
 
     def get(self, webhook_id: int) -> dict:
         """Get a specific webhook by its ID"""
-        return self._v3_client.request('GET', f'/hooks/{webhook_id}')
+        return self._v3_client.get(f'/hooks/{webhook_id}')
 
     def create(self, *, scope: str, destination: str, headers: dict, is_active: bool = True) -> dict:
         """Create a webhook under a specific scope"""
@@ -23,12 +23,12 @@ class BigCommerceWebhooksAPI:
             'headers': headers,
             'is_active': is_active,
         }
-        return self._v3_client.request('POST', '/hooks', json=payload)
+        return self._v3_client.post('/hooks', json=payload)
 
     def update(self, webhook_id: int, data: dict) -> dict:
         """Update a specific webhook by its ID"""
-        return self._v3_client.request('PUT', f'/hooks/{webhook_id}', json=data)
+        return self._v3_client.put(f'/hooks/{webhook_id}', json=data)
 
     def delete(self, webhook_id: int) -> dict:
         """Delete a specific webhook by its ID"""
-        return self._v3_client.request('DELETE', f'/hooks/{webhook_id}')
+        return self._v3_client.delete(f'/hooks/{webhook_id}')

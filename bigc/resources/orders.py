@@ -2,8 +2,8 @@ from collections.abc import Iterator
 from typing import Optional
 from urllib.parse import urlparse, urlunparse, urlencode
 
-from bigc.exceptions import ResourceNotFoundError
 from bigc._client import BigCommerceV2APIClient, BigCommerceV3APIClient
+from bigc.exceptions import ResourceNotFoundError
 
 
 class BigCommerceOrdersAPI:
@@ -24,7 +24,7 @@ class BigCommerceOrdersAPI:
 
     def get(self, order_id: int) -> dict:
         """Get an order by its ID"""
-        return self._v2_client.request('GET', f'/orders/{order_id}')
+        return self._v2_client.get(f'/orders/{order_id}')
 
     def all_products(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order products in an order"""
@@ -32,7 +32,7 @@ class BigCommerceOrdersAPI:
 
     def get_product(self, order_id: int, product_id: int) -> dict:
         """Get a specific order product in an order by ID"""
-        return self._v2_client.request('GET', f'/orders/{order_id}/products/{product_id}')
+        return self._v2_client.get(f'/orders/{order_id}/products/{product_id}')
 
     def all_refunds(self, order_id: Optional[int]) -> Iterator[dict]:
         """Return an iterator for all refunds, optionally filtered by order"""
@@ -45,7 +45,7 @@ class BigCommerceOrdersAPI:
     def get_refund(self, refund_id: int) -> dict:
         """Get a specific refund by its ID"""
         try:
-            return self._v3_client.request('GET', f'/orders/payment_actions/refunds?id:in={refund_id}')[0]
+            return self._v3_client.get(f'/orders/payment_actions/refunds?id:in={refund_id}')[0]
         except IndexError:
             raise ResourceNotFoundError()
 
@@ -55,4 +55,4 @@ class BigCommerceOrdersAPI:
 
     def get_shipping_address(self, order_id: int, address_id: int) -> dict:
         """Get a specific shipping address in an order by ID"""
-        return self._v2_client.request('GET', f'/orders/{order_id}/shipping_addresses/{address_id}')
+        return self._v2_client.get(f'/orders/{order_id}/shipping_addresses/{address_id}')

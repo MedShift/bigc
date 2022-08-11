@@ -13,7 +13,7 @@ class BigCommerceCategoriesAPI:
 
     def get(self, category_id: int) -> dict:
         """Get a specific category by its ID"""
-        return self._v3_client.request('GET', f'/catalog/categories/{category_id}')
+        return self._v3_client.get(f'/catalog/categories/{category_id}')
 
     def create(self, *, name: str, parent_id: int = 0, **kwargs) -> dict:
         """Create a category"""
@@ -22,12 +22,12 @@ class BigCommerceCategoriesAPI:
             'parent_id': parent_id,
             **kwargs
         }
-        return self._v3_client.request('POST', '/catalog/categories', json=payload)
+        return self._v3_client.post('/catalog/categories', json=payload)
 
     def update(self, category_id: int, data: dict) -> dict:
         """Update a specific category by its ID"""
-        return self._v3_client.request('PUT', f'/catalog/categories/{category_id}', json=data)
+        return self._v3_client.put(f'/catalog/categories/{category_id}', json=data)
 
     def delete(self, category_id: int) -> dict:
         """Delete a specific category by its ID"""
-        return self._v3_client.request('DELETE', f'/catalog/categories/{category_id}')
+        return self._v3_client.delete(f'/catalog/categories/{category_id}')

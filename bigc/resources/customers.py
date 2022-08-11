@@ -50,7 +50,7 @@ class BigCommerceCustomersAPI:
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         try:
-            return self._v3_client.request('GET', urlunparse(url_parts))[0]
+            return self._v3_client.get(urlunparse(url_parts))[0]
         except IndexError:
             raise ResourceNotFoundError()
 
@@ -62,7 +62,7 @@ class BigCommerceCustomersAPI:
             'email': email,
             **kwargs,
         }
-        return self._v3_client.request('POST', '/customers', json=[payload])[0]
+        return self._v3_client.post('/customers', json=[payload])[0]
 
     def update(self, customer_id: int, data: dict) -> dict:
         """Update a single customer"""
@@ -70,7 +70,7 @@ class BigCommerceCustomersAPI:
             'id': customer_id,
             **data,
         }
-        return self._v3_client.request('PUT', f'/customers', json=[payload])[0]
+        return self._v3_client.put(f'/customers', json=[payload])[0]
 
     def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
         """Update a form field value for a single customer"""
@@ -79,4 +79,4 @@ class BigCommerceCustomersAPI:
             'name': field_name,
             'value': value,
         }]
-        return self._v3_client.request('PUT', '/customers/form-field-values', json=payload)[0]
+        return self._v3_client.put('/customers/form-field-values', json=payload)[0]

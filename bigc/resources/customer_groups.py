@@ -13,7 +13,7 @@ class BigCommerceCustomerGroupsAPI:
 
     def get(self, customer_group_id: int) -> dict:
         """Get a specific customer group by its ID"""
-        return self._v2_client.request('GET', f'/customer_groups/{customer_group_id}')
+        return self._v2_client.get(f'/customer_groups/{customer_group_id}')
 
     def create(self, *, name: str, **kwargs) -> dict:
         """Create a customer group"""
@@ -21,12 +21,12 @@ class BigCommerceCustomerGroupsAPI:
             'name': name,
             **kwargs
         }
-        return self._v2_client.request('POST', '/customer_groups', json=payload)
+        return self._v2_client.post('/customer_groups', json=payload)
 
     def update(self, customer_group_id: int, data: dict) -> dict:
         """Update a specific customer group by its ID"""
-        return self._v2_client.request('PUT', f'/customer_groups/{customer_group_id}', json=data)
+        return self._v2_client.put(f'/customer_groups/{customer_group_id}', json=data)
 
     def delete(self, customer_group_id: int) -> dict:
         """Delete a specific customer group by its ID"""
-        return self._v2_client.request('DELETE', f'/customer_groups/{customer_group_id}')
+        return self._v2_client.delete(f'/customer_groups/{customer_group_id}')
