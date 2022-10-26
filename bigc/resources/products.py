@@ -1,12 +1,12 @@
 from collections.abc import Iterator
 from urllib.parse import urlparse, urlencode, urlunparse
 
-from bigc._client import BigCommerceV3APIClient
+from bigc.api_client import BigCommerceAPIClient
 
 
 class BigCommerceProductsAPI:
-    def __init__(self, store_hash: str, access_token: str):
-        self._v3_client = BigCommerceV3APIClient(store_hash, access_token)
+    def __init__(self, api_client: BigCommerceAPIClient):
+        self._api = api_client
 
     def all(self, *, include_variants: bool = False, include_custom_fields: bool = False) -> Iterator[dict]:
         """Return an iterator for all products"""
@@ -23,7 +23,7 @@ class BigCommerceProductsAPI:
             query_dict['include'] = ','.join(include)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v3_client.paginated_request('GET', urlunparse(url_parts))
+        return self._api.v3.get_many(urlunparse(url_parts))
 
     def get(self, product_id: int, *, include_variants: bool = False, include_custom_fields: bool = False) -> dict:
         """Get a specific product by its ID"""
@@ -40,7 +40,7 @@ class BigCommerceProductsAPI:
             query_dict['include'] = ','.join(include)
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
-        return self._v3_client.request('GET', urlunparse(url_parts))
+        return self._api.v3.get(urlunparse(url_parts))
 
     def create(self, *, name: str, product_type: str, weight: float, price: float, **kwargs) -> dict:
         """Create a product"""
@@ -51,20 +51,20 @@ class BigCommerceProductsAPI:
             'price': price,
             **kwargs,
         }
-        return self._v3_client.request('POST', '/catalog/products', json=payload)
+        return self._api.v3.post('/catalog/products', json=payload)
 
     def update(self, product_id: int, data: dict) -> dict:
         """Update a specific product by its ID"""
-        return self._v3_client.request('PUT', f'/catalog/products/{product_id}', json=data)
+        return self._api.v3.put(f'/catalog/products/{product_id}', json=data)
 
     def delete(self, product_id: int) -> dict:
         """Delete a specific product by its ID"""
-        return self._v3_client.request('DELETE', f'/catalog/products/{product_id}')
+        return self._api.v3.delete(f'/catalog/products/{product_id}')
 
     def get_pricing(self, items: list[dict], *, channel_id: int = 1, currency_code: str = 'USD',
                     customer_group_id: int = 0) -> Iterator[dict]:
         """Return an iterator for batch product pricing"""
-        return self._v3_client.request('POST', '/pricing/products', json={
+        return self._api.v3.post('/pricing/products', json={
             'channel_id': channel_id,
             'currency_code': currency_code,
             'customer_group_id': customer_group_id,
