@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from email.utils import parsedate_tz, mktime_tz
+from email.utils import mktime_tz, parsedate_tz
 
 __all__ = ('parse_rfc2822_date',)
 

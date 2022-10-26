@@ -2,7 +2,7 @@ import itertools
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from typing import NoReturn
-from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
 

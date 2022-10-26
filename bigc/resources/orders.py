@@ -1,6 +1,6 @@
 from collections.abc import Iterator
 from typing import Optional
-from urllib.parse import urlparse, urlunparse, urlencode
+from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
 from bigc.exceptions import ResourceNotFoundError
