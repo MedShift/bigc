@@ -80,3 +80,7 @@ class BigCommerceCustomersAPI:
             'value': value,
         }]
         return self._api.v3.put('/customers/form-field-values', json=payload)[0]
+
+    def delete(self, customer_id: int) -> None:
+        """Delete a specific customer by its ID"""
+        self._api.v3.delete(f'/customers?id:in={customer_id}')
