@@ -158,7 +158,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
             query_dict['page'] = [str(cur_page)]
             paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
 
-            res_data = super().get(urlunparse(paged_url_parts), **kwargs)
+            res_data = super().request('GET', urlunparse(paged_url_parts), **kwargs)
 
             cur_page += 1
             num_pages = int(res_data['meta']['pagination']['total_pages'])
