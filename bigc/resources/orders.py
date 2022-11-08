@@ -26,6 +26,23 @@ class BigCommerceOrdersAPI:
         """Get an order by its ID"""
         return self._v2_client.request('GET', f'/orders/{order_id}')
 
+    def create(self, *, products: dict, billing_address: dict, **kwargs) -> dict:
+        """Create an order"""
+        payload = {
+            'products': products,
+            'billing_address': billing_address,
+            **kwargs,
+        }
+        return self._v2_client.request('POST', '/orders', json=payload)
+
+    def update(self, order_id: int, data: dict) -> dict:
+        """Update a specific order by its ID"""
+        return self._v2_client.request('PUT', f'/orders/{order_id}', json=data)
+
+    def delete(self, order_id: int) -> dict:
+        """Delete a specific order by its ID"""
+        return self._v2_client.request('DELETE', f'/orders/{order_id}')
+
     def all_products(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order products in an order"""
         return self._v2_client.paginated_request('GET', f'/orders/{order_id}/products')
