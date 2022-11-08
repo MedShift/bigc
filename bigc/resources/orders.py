@@ -32,15 +32,15 @@ class BigCommerceOrdersAPI:
             'billing_address': billing_address,
             **kwargs,
         }
-        return self._v2_client.request('POST', '/orders', json=payload)
+        return self._api.v2.request('POST', '/orders', json=payload)
 
     def update(self, order_id: int, data: dict) -> dict:
         """Update a specific order by its ID"""
-        return self._v2_client.request('PUT', f'/orders/{order_id}', json=data)
+        return self._api.v2.request('PUT', f'/orders/{order_id}', json=data)
 
     def delete(self, order_id: int) -> dict:
         """Delete a specific order by its ID"""
-        return self._v2_client.request('DELETE', f'/orders/{order_id}')
+        return self._api.v2.request('DELETE', f'/orders/{order_id}')
 
     def all_products(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order products in an order"""
