@@ -2,7 +2,7 @@ import itertools
 from abc import ABC, abstractmethod
 from collections.abc import Generator
 from typing import NoReturn
-from urllib.parse import urlparse, urlencode, parse_qs, urlunparse
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
 
@@ -18,6 +18,7 @@ class BigCommerceRequestClient(ABC):
         self.access_token = access_token
 
     def request(self, method: str, path: str, **kwargs):
+        """Make a request to the BigCommerce API (uses Requests internally)"""
         kwargs['headers'] = self._get_standard_request_headers() | kwargs.get('headers', {})
 
         try:
@@ -31,8 +32,25 @@ class BigCommerceRequestClient(ABC):
         else:
             self._handle_error(response)
 
+    def get(self, *args, **kwargs):
+        """Alias for ``request('GET', ...)``"""
+        return self.request('GET', *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        """Alias for ``request('POST', ...)``"""
+        return self.request('POST', *args, **kwargs)
+
+    def put(self, *args, **kwargs):
+        """Alias for ``request('PUT', ...)``"""
+        return self.request('PUT', *args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        """Alias for ``request('DELETE', ...)``"""
+        return self.request('DELETE', *args, **kwargs)
+
     @abstractmethod
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
+        """Make a request to a paginated BigCommerce API endpoint"""
         pass
 
     @abstractmethod
@@ -50,6 +68,7 @@ class BigCommerceRequestClient(ABC):
     def _handle_error(response: requests.Response) -> NoReturn:
         # TODO: Try to extract an error message from the response body
 
+        # Specific errors
         if response.status_code == 400:
             raise exceptions.BadRequestError()
         if response.status_code == 401:
@@ -67,6 +86,7 @@ class BigCommerceRequestClient(ABC):
         if response.status_code == 507:
             raise exceptions.PlanLimitExceededError()
 
+        # General errors
         if 300 <= response.status_code < 400:
             raise exceptions.BigCommerceRedirectionError()
         if 400 <= response.status_code < 500:
@@ -78,10 +98,12 @@ class BigCommerceRequestClient(ABC):
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):
+    """A client for directly calling BigCommerce v2 API endpoints"""
+
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v2/{path.lstrip('/')}"
 
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
@@ -94,7 +116,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
             query_dict['page'] = [str(cur_page)]
             paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
 
-            res_data = super().request(method, urlunparse(paged_url_parts), **kwargs)
+            res_data = super().get(urlunparse(paged_url_parts), **kwargs)
 
             # The API returns HTTP 204 (empty) past the last page
             if res_data is None:
@@ -111,6 +133,8 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
 
 
 class BigCommerceV3APIClient(BigCommerceRequestClient):
+    """A client for directly calling BigCommerce v3 API endpoints"""
+
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v3/{path.lstrip('/')}"
 
@@ -119,7 +143,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         response = super().request(method, path, **kwargs)
         return None if response is None else response['data']
 
-    def paginated_request(self, method: str, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, **kwargs) -> Generator:
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
@@ -134,7 +158,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
             query_dict['page'] = [str(cur_page)]
             paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
 
-            res_data = super().request(method, urlunparse(paged_url_parts), **kwargs)
+            res_data = super().request('GET', urlunparse(paged_url_parts), **kwargs)
 
             cur_page += 1
             num_pages = int(res_data['meta']['pagination']['total_pages'])
@@ -143,3 +167,9 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
                 raise TypeError(f"expected list, got {type(res_data['data']).__name__}")
 
             yield from res_data['data']
+
+
+class BigCommerceAPIClient:
+    def __init__(self, *args, **kwargs):
+        self.v2: BigCommerceV2APIClient = BigCommerceV2APIClient(*args, **kwargs)
+        self.v3: BigCommerceV3APIClient = BigCommerceV3APIClient(*args, **kwargs)
