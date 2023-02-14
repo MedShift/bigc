@@ -15,24 +15,23 @@ class BigCommerceCheckoutsAPI:
         """Get a specific checkout by its ID"""
         return self._api.v3.get(f'/checkouts/{checkout_id}')
 
-    def update_customer_message(self, checkout_id: UUIDLike, customer_message: str) -> dict:
+    def update_customer_message(self, checkout_id: UUIDLike, *, customer_message: str) -> dict:
         """Change customer message pertaining to an existing Checkout"""
         payload = {'customer_message': customer_message}
         return self._api.v3.put(f'/checkouts/{checkout_id}', json=payload)
 
-    def add_billing_address(self, checkout_id: UUIDLike, email: str, country_code: str, **kwargs) -> dict:
+    def add_billing_address(self, checkout_id: UUIDLike, *, email: str, country_code: str, **kwargs) -> dict:
         """Add a billing address to an existing checkout"""
         payload = {'email': email, 'country_code': country_code, **kwargs}
         return self._api.v3.post(f'/checkouts/{checkout_id}/billing-address', json=payload)
 
-    def update_billing_address(self, checkout_id: UUIDLike, address_id: str, email: str, country_code: str,
+    def update_billing_address(self, checkout_id: UUIDLike, address_id: str, *, email: str, country_code: str,
                                **kwargs) -> dict:
         """Update an existing billing address on a checkout"""
         payload = {'email': email, 'country_code': country_code, **kwargs}
         return self._api.v3.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', json=payload)
 
-    def add_consignment(self, checkout_id: UUIDLike,
-                        include_available_shipping_options: bool = False,
+    def add_consignment(self, checkout_id: UUIDLike, include_available_shipping_options: bool = False,
                         **kwargs) -> dict:
         """Add a new consignment to a checkout"""
         url_parts = urlparse(f'/checkouts/{checkout_id}/consignments')
