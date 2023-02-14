@@ -30,6 +30,7 @@ The following resources are currently supported:
 
 - `carts`
 - `categories`
+- `checkouts`
 - `customer_groups`
 - `customers`
 - `orders`
