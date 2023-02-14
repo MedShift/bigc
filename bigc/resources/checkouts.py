@@ -31,7 +31,8 @@ class BigCommerceCheckoutsAPI:
         payload = {'email': email, 'country_code': country_code, **kwargs}
         return self._api.v3.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', json=payload)
 
-    def add_consignment(self, checkout_id: UUIDLike, include_available_shipping_options: bool = False,
+    def add_consignment(self, checkout_id: UUIDLike,
+                        include_available_shipping_options: bool = False,
                         **kwargs) -> dict:
         """Add a new consignment to a checkout"""
         url_parts = urlparse(f'/checkouts/{checkout_id}/consignments')
@@ -50,10 +51,23 @@ class BigCommerceCheckoutsAPI:
         return self._api.v3.post(urlunparse(url_parts), json=payload)
 
     def update_consignment_shipping_option(self, checkout_id: UUIDLike, consignment_id: str,
-                                           shipping_option_id: str) -> dict:
+                                           include_available_shipping_options: bool = False,
+                                           **kwargs) -> dict:
         """Update an existing consignment's selected shipping option"""
-        payload = {'shipping_option_id': shipping_option_id}
-        return self._api.v3.put(f'/checkouts/{checkout_id}/consignments/{consignment_id}', json=payload)
+        url_parts = urlparse(f'/checkouts/{checkout_id}/consignments/{consignment_id}')
+
+        include = []
+        if include_available_shipping_options:
+            include.append('consignments.available_shipping_options')
+
+        query_dict = {}
+        if include:
+            query_dict['include'] = ','.join(include)
+
+        url_parts = url_parts._replace(query=urlencode(query_dict))
+
+        payload = {**kwargs}
+        return self._api.v3.put(urlunparse(url_parts), json=payload)
 
     def delete_consignment(self, checkout_id: UUIDLike, consignment_id: str) -> dict:
         """Remove an existing consignment from a checkout"""
