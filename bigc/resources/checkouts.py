@@ -50,9 +50,9 @@ class BigCommerceCheckoutsAPI:
         payload = [{**kwargs}]
         return self._api.v3.post(urlunparse(url_parts), json=payload)
 
-    def update_consignment_shipping_option(self, checkout_id: UUIDLike, consignment_id: str,
-                                           include_available_shipping_options: bool = False,
-                                           **kwargs) -> dict:
+    def update_consignment(self, checkout_id: UUIDLike, consignment_id: str,
+                           include_available_shipping_options: bool = False,
+                           **kwargs) -> dict:
         """Update an existing consignment's selected shipping option"""
         url_parts = urlparse(f'/checkouts/{checkout_id}/consignments/{consignment_id}')
 
