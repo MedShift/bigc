@@ -1,6 +1,5 @@
 from bigc.api_client import BigCommerceAPIClient
 from bigc.resources import *
-from bigc.resources.order_shipment import BigCommerceOrderShipmentsAPI
 
 
 class BigCommerceAPI:
@@ -13,7 +12,6 @@ class BigCommerceAPI:
         self.customer_groups: BigCommerceCustomerGroupsAPI = BigCommerceCustomerGroupsAPI(api_client)
         self.customers: BigCommerceCustomersAPI = BigCommerceCustomersAPI(api_client)
         self.orders: BigCommerceOrdersAPI = BigCommerceOrdersAPI(api_client)
-        self.order_shipments: BigCommerceOrderShipmentsAPI = BigCommerceOrderShipmentsAPI(api_client)
         self.products: BigCommerceProductsAPI = BigCommerceProductsAPI(api_client)
         self.product_variants: BigCommerceProductVariantsAPI = BigCommerceProductVariantsAPI(api_client)
         self.webhooks: BigCommerceWebhooksAPI = BigCommerceWebhooksAPI(api_client)
