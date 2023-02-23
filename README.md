@@ -34,7 +34,6 @@ The following resources are currently supported:
 - `customer_groups`
 - `customers`
 - `orders`
-- `order_shipments`
 - `products`
 - `product_variants`
 - `webhooks`
