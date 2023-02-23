@@ -63,5 +63,3 @@ Some extra utility functions that don't interact with the BigCommerce API are av
 For convenience, some constants are made available in `bigc.data`.
 
 - `bigc.data.BigCommerceOrderStatus`: An `Enum` of order statuses and their IDs
-- `bigc.data.BigCommerceShippingMethod`: An `Enum` of shipping methods
-- `bigc.data.BigCommerceShippingProvider`: An `Enum` of shipping providers

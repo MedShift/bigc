@@ -79,33 +79,12 @@ class BigCommerceOrdersAPI:
 
         return self._api.v2.get_many(f'/orders/{order_id}/shipments')
 
-    def create_shipment(
-            self,
-            order_id: int,
-            order_address_id: int,
-            items: list[dict],
-            *,
-            tracking_number: Optional[str] = None,
-            shipping_method: Optional[BigCommerceShippingMethod] = None,
-            shipping_provider: Optional[BigCommerceShippingProvider] = None,
-            tracking_carrier: Optional[str] = None,
-            comments: Optional[str] = None,
-            **kwargs,
-    ) -> dict:
+    def create_shipment(self, order_id: int, *, order_address_id: int, items: list[dict], **kwargs) -> dict:
         """Creates an order shipment for the specified order"""
-
-        optional_params = {k: v for k, v in {
-            'tracking_number': tracking_number,
-            'shipping_method': shipping_method,
-            'shipping_provider': shipping_provider,
-            'tracking_carrier': tracking_carrier,
-            'comments': comments
-        }.items() if v is not None}
 
         payload = {
             'order_address_id': order_address_id,
             'items': items,
-            **optional_params,
             **kwargs,
         }
 
