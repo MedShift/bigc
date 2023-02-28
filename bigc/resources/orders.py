@@ -65,6 +65,11 @@ class BigCommerceOrdersAPI:
         except IndexError:
             raise ResourceNotFoundError()
 
+    def all_items(self, order_id: int) -> Iterator[dict]:
+        """Get an order's items"""
+
+        return self._api.v2.get_many(f'/orders/{order_id}/products')
+
     def all_shipping_addresses(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order shipping addresses in an order"""
         return self._api.v2.get_many(f'/orders/{order_id}/shipping_addresses')
