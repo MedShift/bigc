@@ -92,4 +92,4 @@ class BigCommerceOrdersAPI:
     def delete_shipment(self, order_id: int, shipment_id: int) -> None:
         """Deletes the specified order shipment for the specified order by their IDs"""
 
-        return self._api.v2.delete(f'/orders/{order_id}/shipments/{shipment_id}')
+        self._api.v2.delete(f'/orders/{order_id}/shipments/{shipment_id}')
