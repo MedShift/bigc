@@ -73,6 +73,10 @@ class BigCommerceOrdersAPI:
         """Get a specific shipping address in an order by ID"""
         return self._api.v2.get(f'/orders/{order_id}/shipping_addresses/{address_id}')
 
+    def update_shipping_address(self, order_id: int, address_id: int, **kwargs) -> dict:
+        """Update a specific shipping address in an order by ID"""
+        return self._api.v2.put(f'/orders/{order_id}/shipping_addresses/{address_id}', json=kwargs)
+
     def all_shipments(self, order_id: int) -> Iterator[dict]:
         """Returns all shipments for a specified order"""
 
