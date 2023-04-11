@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "bigc"
-version = "0.2.4"
+version = "0.2.5"
 description = "Unofficial client for the BigCommerce API"
 license = "MIT"
 authors = ["Ryan Thomson <ryan@medshift.com>", "Dillon Hartley <dillon@medshift.com>", "Adam Walsh <adam@medshift.com>"]
