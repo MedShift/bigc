@@ -50,7 +50,7 @@ class BigCommerceOrdersAPI:
         """Get a specific order product in an order by ID"""
         return self._api.v2.get(f'/orders/{order_id}/products/{product_id}')
 
-    def get_refund_quote(self, order_id: int, items: list, **kwargs):
+    def get_refund_quote(self, order_id: int, items: list, **kwargs) -> dict:
         """Get a refund quote for an order by ID"""
         payload = {
             "items": items,
@@ -58,7 +58,7 @@ class BigCommerceOrdersAPI:
         }
         return self._api.v3.post(f'/orders/{order_id}/payment_actions/refund_quotes', json=payload)
 
-    def create_refund(self, order_id: int, items: list, payments: list[dict], **kwargs):
+    def create_refund(self, order_id: int, items: list, payments: list[dict], **kwargs) -> dict:
         """Create a refund for an order by ID"""
         payload = {
             "items": items,
