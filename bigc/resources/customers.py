@@ -86,39 +86,21 @@ class BigCommerceCustomersAPI:
         return self._api.v3.put('/customers/form-field-values', json=payload)[0]
 
     def all_addresses(self, customer_id: int) -> Iterator[dict]:
-        """Get all addresses, filtering for a single customer"""
+        """Get all addresses from a customer's address book"""
         return self._api.v3.get_many(f'/customers/addresses?customer_id:in={customer_id}')
 
     def get_address(self, customer_id: int, address_id: int) -> dict:
-        """Get one address by its ID, filtering for a single customer"""
+        """Get one address by its ID, from a customer's address book"""
         return self._api.v3.get(f'/customers/addresses?customer_id:in={customer_id}&id:in={address_id}')
 
-    def create_address(self, address_data: dict) -> dict:
-        """Create an address"""
-        valid_address_params = ['customer_id', 'first_name', 'last_name', 'company', 'phone', 'address_type',
-                                'address1', 'address2', 'city', 'country_code', 'state_or_province', 'postal_code']
+    def create_address(self, customer_id: int, **kwargs) -> dict:
+        """Add an address to the customer's address book"""
+        return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])
 
-        validated_address_data = [{
-            address_key: address_value
-            for address_key, address_value in address_data.items()
-            if address_key in valid_address_params
-        }]
-
-        return self._api.v3.post('/customers/addresses', json=validated_address_data)
-
-    def update_address(self, address_data: dict) -> dict:
+    def update_address(self, **kwargs) -> dict:
         """Update an address by its ID"""
-        valid_address_params = ['id', 'customer_id', 'first_name', 'last_name', 'company', 'phone', 'address_type',
-                                'address1', 'address2', 'city', 'country_code', 'state_or_province', 'postal_code']
+        return self._api.v3.put('/customers/addresses', json=[{**kwargs}])
 
-        validated_address_data = [{
-            address_key: address_value
-            for address_key, address_value in address_data.items()
-            if address_key in valid_address_params
-        }]
-
-        return self._api.v3.put('/customers/addresses', json=validated_address_data)
-
-    def delete_address(self, addresses_to_delete: list) -> dict:
+    def delete_address(self, address_to_delete: int) -> dict:
         """Delete an address by its ID"""
-        return self._api.v3.delete(f"/customers/addresses?id:in={','.join(str(i) for i in addresses_to_delete)}")
+        return self._api.v3.delete(f"/customers/addresses?id:in={str(address_to_delete)}")
