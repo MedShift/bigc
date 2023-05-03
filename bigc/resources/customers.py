@@ -102,7 +102,7 @@ class BigCommerceCustomersAPI:
 
     def update_address(self, address_id: int, **kwargs) -> dict:
         """Update an address by its ID"""
-        return self._api.v3.put('/customers/addresses', json=[{'address_id': address_id, **kwargs}])
+        return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])
 
     def delete_address(self, address_id: int) -> dict:
         """Delete an address by its ID"""
