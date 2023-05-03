@@ -91,16 +91,19 @@ class BigCommerceCustomersAPI:
 
     def get_address(self, customer_id: int, address_id: int) -> dict:
         """Get one address by its ID, from a customer's address book"""
-        return self._api.v3.get(f'/customers/addresses?customer_id:in={customer_id}&id:in={address_id}')
+        try:
+            return self._api.v3.get(f'/customers/addresses?customer_id:in={customer_id}&id:in={address_id}')[0]
+        except IndexError:
+            raise ResourceNotFoundError()
 
     def create_address(self, customer_id: int, **kwargs) -> dict:
         """Add an address to the customer's address book"""
         return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])
 
-    def update_address(self, **kwargs) -> dict:
+    def update_address(self, address_id: int, **kwargs) -> dict:
         """Update an address by its ID"""
-        return self._api.v3.put('/customers/addresses', json=[{**kwargs}])
+        return self._api.v3.put('/customers/addresses', json=[{'address_id': address_id, **kwargs}])
 
-    def delete_address(self, address_to_delete: int) -> dict:
+    def delete_address(self, address_id: int) -> dict:
         """Delete an address by its ID"""
-        return self._api.v3.delete(f"/customers/addresses?id:in={str(address_to_delete)}")
+        return self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
