@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from typing import Any, Iterable
+from typing import Any, Iterable, List
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
@@ -96,14 +96,14 @@ class BigCommerceCustomersAPI:
         except IndexError:
             raise ResourceNotFoundError()
 
-    def create_address(self, customer_id: int, **kwargs) -> dict:
+    def create_address(self, customer_id: int, **kwargs) -> List[dict]:
         """Add an address to the customer's address book"""
         return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])
 
-    def update_address(self, address_id: int, **kwargs) -> dict:
+    def update_address(self, address_id: int, **kwargs) -> List[dict]:
         """Update an address by its ID"""
         return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])
 
-    def delete_address(self, address_id: int) -> dict:
+    def delete_address(self, address_id: int) -> None:
         """Delete an address by its ID"""
         return self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
