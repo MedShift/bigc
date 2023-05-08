@@ -112,4 +112,4 @@ class BigCommerceCustomersAPI:
 
     def delete_address(self, address_id: int) -> None:
         """Delete an address by its ID"""
-        return self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
+        self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
