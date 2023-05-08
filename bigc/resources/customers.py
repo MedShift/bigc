@@ -101,14 +101,14 @@ class BigCommerceCustomersAPI:
         try:
             return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])[0]
         except IndexError:
-            raise BigCommerceAPIException('Provided address already exists')
+            raise BigCommerceAPIException('This address already exists')
 
     def update_address(self, address_id: int, **kwargs) -> dict:
         """Update an address by its ID"""
         try:
             return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])[0]
         except IndexError:
-            raise BigCommerceAPIException('Updated address cannot match existing address')
+            raise BigCommerceAPIException('This address already exists')
 
     def delete_address(self, address_id: int) -> None:
         """Delete an address by its ID"""
