@@ -3,7 +3,7 @@ from typing import Any, Iterable
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
-from bigc.exceptions import ResourceNotFoundError
+from bigc.exceptions import BigCommerceAPIException, ResourceNotFoundError
 
 
 class BigCommerceCustomersAPI:
@@ -98,12 +98,18 @@ class BigCommerceCustomersAPI:
 
     def create_address(self, customer_id: int, **kwargs) -> dict:
         """Add an address to the customer's address book"""
-        return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])
+        try:
+            return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])[0]
+        except IndexError:
+            raise BigCommerceAPIException('This address already exists')
 
     def update_address(self, address_id: int, **kwargs) -> dict:
         """Update an address by its ID"""
-        return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])
+        try:
+            return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])[0]
+        except IndexError:
+            raise BigCommerceAPIException('This address already exists')
 
-    def delete_address(self, address_id: int) -> dict:
+    def delete_address(self, address_id: int) -> None:
         """Delete an address by its ID"""
-        return self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
+        self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
