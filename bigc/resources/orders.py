@@ -67,7 +67,7 @@ class BigCommerceOrdersAPI:
         }
         return self._api.v3.post(f'/orders/{order_id}/payment_actions/refunds', json=payload)
 
-    def all_refunds(self, order_id: Optional[int]) -> Iterator[dict]:
+    def all_refunds(self, order_id: Optional[int] = None) -> Iterator[dict]:
         """Return an iterator for all refunds, optionally filtered by order"""
         if order_id:
             endpoint = f'/orders/{order_id}/payment_actions/refunds'
