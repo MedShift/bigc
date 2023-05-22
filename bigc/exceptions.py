@@ -1,5 +1,26 @@
+from __future__ import annotations
+
+from typing import Any
+
+from requests import Response
+import http
+
+
 class BigCommerceAPIException(Exception):
     """Base exception class for BigCommerce API errors"""
+
+    def __init__(self, response: Response):
+        self.response = response
+
+        super().__init__(f'Request to BigCommerce failed with {self.message}')
+
+    @property
+    def status_code(self) -> int:
+        return self.response.status_code
+
+    @property
+    def message(self) -> str:
+        return f'{self.status_code} {http.HTTPStatus(self.status_code).phrase}: {self.response.text}'
 
 
 class BigCommerceRedirectionError(BigCommerceAPIException):

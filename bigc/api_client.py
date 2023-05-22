@@ -66,35 +66,33 @@ class BigCommerceRequestClient(ABC):
 
     @staticmethod
     def _handle_error(response: requests.Response) -> NoReturn:
-        # TODO: Try to extract an error message from the response body
-
         # Specific errors
         if response.status_code == 400:
-            raise exceptions.BadRequestError()
+            raise exceptions.BadRequestError(response)
         if response.status_code == 401:
-            raise exceptions.InvalidAuthorizationError()
+            raise exceptions.InvalidAuthorizationError(response)
         if response.status_code == 403:
-            raise exceptions.InsufficientScopesError()
+            raise exceptions.InsufficientScopesError(response)
         if response.status_code == 404:
-            raise exceptions.ResourceNotFoundError()
+            raise exceptions.ResourceNotFoundError(response)
         if response.status_code == 429:
-            raise exceptions.RateLimitExceededError()
+            raise exceptions.RateLimitExceededError(response)
         if response.status_code == 500:
-            raise exceptions.InternalBigCommerceError()
+            raise exceptions.InternalBigCommerceError(response)
         if response.status_code == 503:
-            raise exceptions.StoreUnavailableError()
+            raise exceptions.StoreUnavailableError(response)
         if response.status_code == 507:
-            raise exceptions.PlanLimitExceededError()
+            raise exceptions.PlanLimitExceededError(response)
 
         # General errors
         if 300 <= response.status_code < 400:
-            raise exceptions.BigCommerceRedirectionError()
+            raise exceptions.BigCommerceRedirectionError(response)
         if 400 <= response.status_code < 500:
-            raise exceptions.BigCommerceClientError()
+            raise exceptions.BigCommerceClientError(response)
         if 500 <= response.status_code < 600:
-            raise exceptions.BigCommerceServerError()
+            raise exceptions.BigCommerceServerError(response)
 
-        raise exceptions.BigCommerceAPIException(f'Unexpected status code ({response.status_code})')
+        raise exceptions.BigCommerceAPIException(response)
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):
