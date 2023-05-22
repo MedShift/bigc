@@ -66,6 +66,8 @@ class BigCommerceRequestClient(ABC):
 
     @staticmethod
     def _handle_error(response: requests.Response) -> NoReturn:
+        # TODO: Try to extract an error message from the response body
+
         # Specific errors
         if response.status_code == 400:
             raise exceptions.BadRequestError(response=response)
