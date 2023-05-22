@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Optional
 
 from requests import Response
-import http
 
 
 class BigCommerceAPIException(Exception):
@@ -29,7 +28,7 @@ class BigCommerceAPIException(Exception):
         if self._message is not None:
             return self._message
 
-        return f'{self.status_code} {http.HTTPStatus(self.status_code).phrase}: {self.response.text}'
+        return f'{self.status_code} {self.response.reason}: {self.response.text}'
 
 
 class BigCommerceRedirectionError(BigCommerceAPIException):
