@@ -18,9 +18,9 @@ class BigCommerceAPIException(Exception):
         )
 
     @property
-    def status_code(self) -> int:
+    def status_code(self) -> Optional[int]:
         if self.response is None:
-            raise RuntimeError('There is no response for this exception')
+            return None
 
         return self.response.status_code
 
