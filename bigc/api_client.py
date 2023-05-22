@@ -68,31 +68,31 @@ class BigCommerceRequestClient(ABC):
     def _handle_error(response: requests.Response) -> NoReturn:
         # Specific errors
         if response.status_code == 400:
-            raise exceptions.BadRequestError(response)
+            raise exceptions.BadRequestError(response=response)
         if response.status_code == 401:
-            raise exceptions.InvalidAuthorizationError(response)
+            raise exceptions.InvalidAuthorizationError(response=response)
         if response.status_code == 403:
-            raise exceptions.InsufficientScopesError(response)
+            raise exceptions.InsufficientScopesError(response=response)
         if response.status_code == 404:
-            raise exceptions.ResourceNotFoundError(response)
+            raise exceptions.ResourceNotFoundError(response=response)
         if response.status_code == 429:
-            raise exceptions.RateLimitExceededError(response)
+            raise exceptions.RateLimitExceededError(response=response)
         if response.status_code == 500:
-            raise exceptions.InternalBigCommerceError(response)
+            raise exceptions.InternalBigCommerceError(response=response)
         if response.status_code == 503:
-            raise exceptions.StoreUnavailableError(response)
+            raise exceptions.StoreUnavailableError(response=response)
         if response.status_code == 507:
-            raise exceptions.PlanLimitExceededError(response)
+            raise exceptions.PlanLimitExceededError(response=response)
 
         # General errors
         if 300 <= response.status_code < 400:
-            raise exceptions.BigCommerceRedirectionError(response)
+            raise exceptions.BigCommerceRedirectionError(response=response)
         if 400 <= response.status_code < 500:
-            raise exceptions.BigCommerceClientError(response)
+            raise exceptions.BigCommerceClientError(response=response)
         if 500 <= response.status_code < 600:
-            raise exceptions.BigCommerceServerError(response)
+            raise exceptions.BigCommerceServerError(response=response)
 
-        raise exceptions.BigCommerceAPIException(response)
+        raise exceptions.BigCommerceAPIException(response=response)
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):

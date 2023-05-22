@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Optional
 
 from requests import Response
 import http
@@ -9,17 +9,26 @@ import http
 class BigCommerceAPIException(Exception):
     """Base exception class for BigCommerce API errors"""
 
-    def __init__(self, response: Response):
+    def __init__(self, message: Optional[str] = None, response: Optional[Response] = None):
+        self._message = message
         self.response = response
 
-        super().__init__(f'Request to BigCommerce failed with {self.message}')
+        super().__init__(
+            message or f'Request to BigCommerce failed{f" with {self.message}" if response is not None else ""}'
+        )
 
     @property
     def status_code(self) -> int:
+        if self.response is None:
+            raise RuntimeError('There is no response for this exception')
+
         return self.response.status_code
 
     @property
     def message(self) -> str:
+        if self._message is not None:
+            return self._message
+
         return f'{self.status_code} {http.HTTPStatus(self.status_code).phrase}: {self.response.text}'
 
 
