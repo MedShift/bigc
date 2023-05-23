@@ -1,5 +1,34 @@
+from __future__ import annotations
+
+from typing import Optional
+
+from requests import Response
+
+
 class BigCommerceAPIException(Exception):
     """Base exception class for BigCommerce API errors"""
+
+    def __init__(self, message: Optional[str] = None, response: Optional[Response] = None):
+        self._message = message
+        self.response = response
+
+        super().__init__(
+            message or f'Request to BigCommerce failed{f" with {self.message}" if response is not None else ""}'
+        )
+
+    @property
+    def status_code(self) -> Optional[int]:
+        if self.response is None:
+            return None
+
+        return self.response.status_code
+
+    @property
+    def message(self) -> str:
+        if self._message is not None:
+            return self._message
+
+        return f'{self.status_code} {self.response.reason}: {self.response.text}'
 
 
 class BigCommerceRedirectionError(BigCommerceAPIException):
