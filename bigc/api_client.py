@@ -1,7 +1,7 @@
 import itertools
 from abc import ABC, abstractmethod
 from collections.abc import Generator
-from typing import NoReturn
+from typing import NoReturn, Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
@@ -49,7 +49,7 @@ class BigCommerceRequestClient(ABC):
         return self.request('DELETE', *args, **kwargs)
 
     @abstractmethod
-    def get_many(self, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
         """Make a request to a paginated BigCommerce API endpoint"""
         pass
 
@@ -103,14 +103,16 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v2/{path.lstrip('/')}"
 
-    def get_many(self, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
+        page_size = MAX_V2_PAGE_SIZE if page_size is None else int(page_size)
+
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
         if 'limit' in query_dict or 'page' in query_dict:
             raise ValueError('path already has pagination query params')
 
-        query_dict['limit'] = [str(MAX_V2_PAGE_SIZE)]
+        query_dict['limit'] = [str(page_size)]
 
         for cur_page in itertools.count(1):
             query_dict['page'] = [str(cur_page)]
@@ -128,7 +130,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
             yield from res_data
 
             # Check if we're on the last page
-            if len(res_data) < MAX_V2_PAGE_SIZE:
+            if len(res_data) < page_size:
                 return
 
 
@@ -143,14 +145,16 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         response = super().request(method, path, **kwargs)
         return None if response is None else response['data']
 
-    def get_many(self, path: str, **kwargs) -> Generator:
+    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
+        page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
+
         url_parts = urlparse(path)
         query_dict = parse_qs(url_parts.query)
 
         if 'limit' in query_dict or 'page' in query_dict:
             raise ValueError('path already has pagination query params')
 
-        query_dict['limit'] = [str(MAX_V3_PAGE_SIZE)]
+        query_dict['limit'] = [str(page_size)]
 
         cur_page = 1
         num_pages = 1  # Will be set to the right value in the loop
