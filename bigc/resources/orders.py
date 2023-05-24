@@ -109,3 +109,7 @@ class BigCommerceOrdersAPI:
         }
 
         return self._api.v2.post(f'/orders/{order_id}/shipments', json=payload)
+
+    def all_coupons(self, order_id: int) -> Iterator[dict]:
+        """Return an iterator for all coupons in an order"""
+        return self._api.v2.get_many(f'/orders/{order_id}/coupons')
