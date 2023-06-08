@@ -110,6 +110,14 @@ class BigCommerceOrdersAPI:
 
         return self._api.v2.post(f'/orders/{order_id}/shipments', json=payload)
 
+    def update_shipment(self, order_id: int, shipment_id: int, **kwargs: dict) -> dict:
+        """Updates an order shipment for the specified order"""
+        payload = {
+            **kwargs
+        }
+
+        return self._api.v2.put(f'/orders/{order_id}/shipments/{shipment_id}', json=[payload])[0]
+
     def all_coupons(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all coupons in an order"""
         return self._api.v2.get_many(f'/orders/{order_id}/coupons')
