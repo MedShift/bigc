@@ -87,10 +87,11 @@ class BigCommerceCustomersAPI:
 
     def all_addresses(self, customer_id: Optional[int] = None) -> Iterator[dict]:
         """Get all addresses, optionally filtered by a customer's address book"""
-        if customer_id:
-            return self._api.v3.get_many(f'/customers/addresses?customer_id:in={customer_id}')
-        else:
-            return self._api.v3.get_many(f'/customers/addresses')
+        params = {
+            **({'customer_id:in': customer_id} if customer_id else {}),
+        }
+
+        return self._api.v3.get_many(f'/customers/addresses', params=params)
 
     def get_address(self, customer_id: int, address_id: int) -> dict:
         """Get one address by its ID, from a customer's address book"""
