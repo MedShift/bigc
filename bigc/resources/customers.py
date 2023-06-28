@@ -85,9 +85,12 @@ class BigCommerceCustomersAPI:
         }]
         return self._api.v3.put('/customers/form-field-values', json=payload)[0]
 
-    def all_addresses(self, customer_id: int) -> Iterator[dict]:
-        """Get all addresses from a customer's address book"""
-        return self._api.v3.get_many(f'/customers/addresses?customer_id:in={customer_id}')
+    def all_addresses(self, customer_id: int | None = None) -> Iterator[dict]:
+        """Get all addresses, optionally filtered by a customer's address book"""
+        if customer_id:
+            return self._api.v3.get_many(f'/customers/addresses?customer_id:in={customer_id}')
+        else:
+            return self._api.v3.get_many(f'/customers/addresses')
 
     def get_address(self, customer_id: int, address_id: int) -> dict:
         """Get one address by its ID, from a customer's address book"""
