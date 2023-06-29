@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from typing import Any, Iterable
+from typing import Any, Iterable, Optional
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
@@ -85,9 +85,13 @@ class BigCommerceCustomersAPI:
         }]
         return self._api.v3.put('/customers/form-field-values', json=payload)[0]
 
-    def all_addresses(self, customer_id: int) -> Iterator[dict]:
-        """Get all addresses from a customer's address book"""
-        return self._api.v3.get_many(f'/customers/addresses?customer_id:in={customer_id}')
+    def all_addresses(self, customer_id: Optional[int] = None) -> Iterator[dict]:
+        """Get all addresses, optionally filtered by a customer's address book"""
+        params = {
+            **({'customer_id:in': customer_id} if customer_id else {}),
+        }
+
+        return self._api.v3.get_many(f'/customers/addresses', params=params)
 
     def get_address(self, customer_id: int, address_id: int) -> dict:
         """Get one address by its ID, from a customer's address book"""
