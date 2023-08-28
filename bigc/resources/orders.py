@@ -110,6 +110,6 @@ class BigCommerceOrdersAPI:
 
         return self._api.v2.post(f'/orders/{order_id}/shipments', json=payload)
 
-    def destroy_shipment(self, order_id: int, shipment_id: int, **kwargs) -> None:
+    def delete_shipment(self, order_id: int, shipment_id: int, **kwargs) -> None:
         """Deletes specific shipment by its ID"""
         return self._api.v2.delete(f'/orders/{order_id}/shipments/{shipment_id}', json=kwargs)
