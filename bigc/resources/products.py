@@ -9,7 +9,7 @@ class BigCommerceProductsAPI:
         self._api = api_client
 
     def all(self, *, include_variants: bool = False, include_custom_fields: bool = False,
-            query_params: dict[str, any] = {}) -> Iterator[dict]:
+            extra_params: dict[str, any] = {}) -> Iterator[dict]:
         """Return an iterator for all products"""
         url_parts = urlparse('/catalog/products')
 
@@ -23,7 +23,7 @@ class BigCommerceProductsAPI:
         if include:
             query_dict['include'] = ','.join(include)
 
-        for key, value in query_params.items():
+        for key, value in extra_params.items():
             query_dict[key] = value
 
         url_parts = url_parts._replace(query=urlencode(query_dict))
