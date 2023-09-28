@@ -9,7 +9,7 @@ class BigCommerceProductsAPI:
         self._api = api_client
 
     def all(self, *, include_variants: bool = False, include_custom_fields: bool = False,
-            extra_params: dict[str, any] = {}) -> Iterator[dict]:
+            extra_params: dict[str, str] = {}) -> Iterator[dict]:
         """Return an iterator for all products"""
         url_parts = urlparse('/catalog/products')
 
