@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from typing import Optional
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
@@ -8,25 +9,23 @@ class BigCommerceProductsAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, *, include_variants: bool = False, include_custom_fields: bool = False,
-            extra_params: dict[str, str] = None) -> Iterator[dict]:
+    def all(self, *,
+            include_variants: bool = False,
+            include_custom_fields: bool = False,
+            extra_params: Optional[dict[str, str]] = None) -> Iterator[dict]:
         """Return an iterator for all products"""
-        if extra_params is None:
-            extra_params = {}
-
         url_parts = urlparse('/catalog/products')
+        query_dict = extra_params.copy() if extra_params else {}
 
         include = []
         if include_variants:
             include.append('variants')
         if include_custom_fields:
             include.append('custom_fields')
-
-        query_dict = extra_params.copy()
         if include:
             query_dict['include'] = ','.join(include)
-        url_parts = url_parts._replace(query=urlencode(query_dict))
 
+        url_parts = url_parts._replace(query=urlencode(query_dict))
         return self._api.v3.get_many(urlunparse(url_parts))
 
     def get(self, product_id: int, *, include_variants: bool = False, include_custom_fields: bool = False) -> dict:
