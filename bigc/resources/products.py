@@ -25,7 +25,6 @@ class BigCommerceProductsAPI:
         query_dict = extra_params.copy()
         if include:
             query_dict['include'] = ','.join(include)
-
         url_parts = url_parts._replace(query=urlencode(query_dict))
 
         return self._api.v3.get_many(urlunparse(url_parts))
