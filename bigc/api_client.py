@@ -13,7 +13,7 @@ MAX_V3_PAGE_SIZE = 250
 
 
 class BigCommerceRequestClient(ABC):
-    def __init__(self, store_hash: str, access_token: str, timeout=None):
+    def __init__(self, store_hash: str, access_token: str, timeout: Optional[float] = None):
         self.store_hash = store_hash
         self.access_token = access_token
         self.timeout = timeout
