@@ -3,8 +3,8 @@ from bigc.resources import *
 
 
 class BigCommerceAPI:
-    def __init__(self, store_hash: str, access_token: str):
-        api_client = BigCommerceAPIClient(store_hash, access_token)
+    def __init__(self, store_hash: str, access_token: str, timeout=None):
+        api_client = BigCommerceAPIClient(store_hash, access_token, timeout)
 
         self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(api_client)
         self.categories: BigCommerceCategoriesAPI = BigCommerceCategoriesAPI(api_client)

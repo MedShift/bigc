@@ -13,13 +13,15 @@ MAX_V3_PAGE_SIZE = 250
 
 
 class BigCommerceRequestClient(ABC):
-    def __init__(self, store_hash: str, access_token: str):
+    def __init__(self, store_hash: str, access_token: str, timeout=None):
         self.store_hash = store_hash
         self.access_token = access_token
+        self.timeout = timeout
 
     def request(self, method: str, path: str, **kwargs):
         """Make a request to the BigCommerce API (uses Requests internally)"""
         kwargs['headers'] = self._get_standard_request_headers() | kwargs.get('headers', {})
+        kwargs.setdefault('timeout', self.timeout)
 
         try:
             response = requests.request(method, self._prepare_url(path), **kwargs)
