@@ -1,9 +1,10 @@
 from bigc.api_client import BigCommerceAPIClient
 from bigc.resources import *
+from typing import Optional
 
 
 class BigCommerceAPI:
-    def __init__(self, store_hash: str, access_token: str, timeout=None):
+    def __init__(self, store_hash: str, access_token: str, timeout: Optional[int] = None):
         api_client = BigCommerceAPIClient(store_hash, access_token, timeout)
 
         self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(api_client)
