@@ -1,6 +1,7 @@
+from typing import Optional
+
 from bigc.api_client import BigCommerceAPIClient
 from bigc.resources import *
-from typing import Optional
 
 
 class BigCommerceAPI:
@@ -10,6 +11,7 @@ class BigCommerceAPI:
         self.carts: BigCommerceCartsAPI = BigCommerceCartsAPI(api_client)
         self.categories: BigCommerceCategoriesAPI = BigCommerceCategoriesAPI(api_client)
         self.checkouts: BigCommerceCheckoutsAPI = BigCommerceCheckoutsAPI(api_client)
+        self.currencies: BigCommerceCurrenciesAPI = BigCommerceCurrenciesAPI(api_client)
         self.customer_groups: BigCommerceCustomerGroupsAPI = BigCommerceCustomerGroupsAPI(api_client)
         self.customers: BigCommerceCustomersAPI = BigCommerceCustomersAPI(api_client)
         self.orders: BigCommerceOrdersAPI = BigCommerceOrdersAPI(api_client)
