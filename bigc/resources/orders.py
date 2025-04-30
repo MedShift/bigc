@@ -96,8 +96,11 @@ class BigCommerceOrdersAPI:
 
     def all_shipments(self, order_id: int) -> Iterator[dict]:
         """Returns all shipments for a specified order"""
-
         return self._api.v2.get_many(f'/orders/{order_id}/shipments')
+
+    def get_shipment(self, order_id: int, shipment_id: int) -> dict:
+        """Get a shipment by its ID"""
+        return self._api.v2.get(f'/orders/{order_id}/shipments/{shipment_id}')
 
     def create_shipment(self, order_id: int, *, order_address_id: int, items: list[dict], **kwargs) -> dict:
         """Creates an order shipment for the specified order"""
