@@ -107,6 +107,8 @@ class BigCommerceRequestClient(ABC):
             if isinstance(value, list | tuple | set):
                 return ','.join(map(str, value))
 
+            return value
+
         return {k: _process_param(v) for k, v in params.items()}
 
     @staticmethod
