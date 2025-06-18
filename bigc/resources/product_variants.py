@@ -7,7 +7,7 @@ class BigCommerceProductVariantsAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, product_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None,  None]:
+    def all(self, product_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
         """Return a generator for all variants of a product"""
 
         return self._api.v3.get_many(f'/catalog/products/{product_id}/variants', **kwargs)

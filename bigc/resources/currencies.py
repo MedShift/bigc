@@ -7,7 +7,7 @@ class BigCommerceCurrenciesAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self.api = api_client
 
-    def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None,  None]:
+    def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
         """Return an iterator for all currencies"""
 
         return self.api.v2.get_many('/currencies', **kwargs)
