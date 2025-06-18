@@ -8,7 +8,7 @@ class BigCommerceCategoriesAPI:
         self._api = api_client
 
     def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return an iterator for all categories"""
+        """Return a generator for all categories"""
 
         return self._api.v3.get_many('/catalog/categories', **kwargs)
 

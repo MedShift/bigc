@@ -8,7 +8,7 @@ class BigCommerceCustomerGroupsAPI:
         self._api = api_client
 
     def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return an iterator for all customer groups"""
+        """Return a generator for all customer groups"""
 
         return self._api.v2.get_many('/customer_groups', **kwargs)
 

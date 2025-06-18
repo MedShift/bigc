@@ -8,7 +8,7 @@ class BigCommerceWebhooksAPI:
         self._api = api_client
 
     def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return an iterator for all webhooks"""
+        """Return a generator for all webhooks"""
 
         return self._api.v3.get_many('/hooks', **kwargs)
 
