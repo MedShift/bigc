@@ -13,7 +13,6 @@ MAX_V3_PAGE_SIZE = 250
 
 class RequestOptions(TypedDict, total=False):
     params: dict[str, Any] | None
-    headers: dict[str, Any] | None
     timeout: float | None
 
 
