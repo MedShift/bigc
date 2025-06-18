@@ -10,11 +10,6 @@ MAX_V2_PAGE_SIZE = 250
 MAX_V3_PAGE_SIZE = 250
 
 
-class RequestOptions(TypedDict, total=False):
-    params: dict[str, Any] | None
-    timeout: float | None
-
-
 class BigCommerceRequestClient(ABC):
     def __init__(self, store_hash: str, access_token: str, timeout: float | None = None):
         self.store_hash = store_hash
@@ -85,7 +80,8 @@ class BigCommerceRequestClient(ABC):
         path: str,
         *,
         page_size: int | None = None,
-        **kwargs: Unpack[RequestOptions],
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> Iterator[Any]:
         """Make a request to a paginated BigCommerce API endpoint"""
         pass
@@ -141,21 +137,22 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
         path: str,
         *,
         page_size: int | None = None,
-        **kwargs: Unpack[RequestOptions],
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> Iterator[Any]:
         page_size = MAX_V2_PAGE_SIZE if page_size is None else int(page_size)
 
-        kwargs['params'] = kwargs.get('params') or {}
+        params = params or {}
 
-        if 'limit' in kwargs['params'] or 'page' in kwargs['params']:
+        if 'limit' in params or 'page' in params:
             raise ValueError('path already has pagination query params')
 
-        kwargs['params']['limit'] = [str(page_size)]
+        params['limit'] = page_size
 
         for cur_page in itertools.count(1):
-            kwargs['params']['page'] = [str(cur_page)]
+            params['page'] = cur_page
 
-            res_data = super().get(path, **kwargs)
+            res_data = super().get(path, params=params, timeout=timeout)
 
             # The API returns HTTP 204 (empty) past the last page
             if res_data is None:
@@ -187,23 +184,24 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         path: str,
         *,
         page_size: int | None = None,
-        **kwargs: Unpack[RequestOptions],
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
     ) -> Iterator[Any]:
         page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
 
-        kwargs['params'] = kwargs.get('params') or {}
+        params = params or {}
 
-        if 'limit' in kwargs['params'] or 'page' in kwargs['params']:
+        if 'limit' in params or 'page' in params:
             raise ValueError('path already has pagination query params')
 
-        kwargs['params']['limit'] = [str(page_size)]
+        params['limit'] = page_size
 
         cur_page = 1
         num_pages = 1  # Will be set to the right value in the loop
         while cur_page <= num_pages:
-            kwargs['params']['page'] = [str(cur_page)]
+            params['page'] = cur_page
 
-            res_data = super().request('GET', path, **kwargs)
+            res_data = super().request('GET', path, params=params, timeout=timeout)
 
             cur_page += 1
             num_pages = int(res_data['meta']['pagination']['total_pages'])
