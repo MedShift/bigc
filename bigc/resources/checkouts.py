@@ -1,9 +1,9 @@
-from typing import Any, Union, Unpack
+from typing import Any, Unpack
 from uuid import UUID
 
 from bigc.api_client import BigCommerceAPIClient, RequestOptions
 
-UUIDLike = Union[UUID, str]
+UUIDLike = UUID | str
 
 
 class BigCommerceCheckoutsAPI:

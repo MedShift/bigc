@@ -1,4 +1,4 @@
-from typing import TypeAlias, Unpack, Any, Union
+from typing import TypeAlias, Unpack, Any
 from uuid import UUID
 
 from bigc.api_client import BigCommerceAPIClient, RequestOptions
