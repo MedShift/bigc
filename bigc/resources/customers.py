@@ -1,4 +1,4 @@
-from typing import Any, Generator, Unpack
+from typing import Any, Iterator, Unpack
 
 from bigc.exceptions import DoesNotExistError, InvalidDataError
 from bigc.api_client import BigCommerceAPIClient, RequestOptions
@@ -8,8 +8,8 @@ class BigCommerceCustomersAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all customers"""
+    def all(self, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all customers"""
 
         return self._api.v3.get_many('/customers', **kwargs)
 
@@ -76,7 +76,7 @@ class BigCommerceCustomersAPI:
             **data,
         }], **kwargs)[0]
 
-    def all_addresses(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
+    def all_addresses(self, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
         """Get all addresses, optionally filtered by a customer's address book"""
 
         return self._api.v3.get_many(f'/customers/addresses', **kwargs)

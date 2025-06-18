@@ -1,4 +1,4 @@
-from typing import Any, Generator, Unpack
+from typing import Any, Iterator, Unpack
 
 from bigc.api_client import RequestOptions
 from bigc.api_client import BigCommerceAPIClient
@@ -9,8 +9,8 @@ class BigCommerceOrdersAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all orders"""
+    def all(self, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all orders"""
 
         return self._api.v2.get_many('/orders', page_size=5, **kwargs)
 
@@ -34,8 +34,8 @@ class BigCommerceOrdersAPI:
 
         self._api.v2.delete(f'/orders/{order_id}', **kwargs)
 
-    def all_products(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all order products in an order"""
+    def all_products(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all order products in an order"""
 
         return self._api.v2.get_many(f'/orders/{order_id}/products', **kwargs)
 
@@ -54,8 +54,8 @@ class BigCommerceOrdersAPI:
 
         return self._api.v3.post(f'/orders/{order_id}/payment_actions/refunds', json=data, **kwargs)
 
-    def all_refunds(self, order_id: int | None = None, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all refunds, optionally filtered by order"""
+    def all_refunds(self, order_id: int | None = None, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all refunds, optionally filtered by order"""
 
         if order_id:
             endpoint = f'/orders/{order_id}/payment_actions/refunds'
@@ -77,8 +77,8 @@ class BigCommerceOrdersAPI:
         except IndexError:
             raise DoesNotExistError() from None
 
-    def all_shipping_addresses(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all order shipping addresses in an order"""
+    def all_shipping_addresses(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all order shipping addresses in an order"""
 
         return self._api.v2.get_many(f'/orders/{order_id}/shipping_addresses', **kwargs)
 
@@ -92,7 +92,7 @@ class BigCommerceOrdersAPI:
 
         return self._api.v2.put(f'/orders/{order_id}/shipping_addresses/{address_id}', json=data, **kwargs)
 
-    def all_shipments(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
+    def all_shipments(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
         """Returns all shipments for a specified order"""
 
         return self._api.v2.get_many(f'/orders/{order_id}/shipments', **kwargs)
@@ -117,7 +117,7 @@ class BigCommerceOrdersAPI:
 
         return self._api.v2.delete(f'/orders/{order_id}/shipments/{shipment_id}', **kwargs)
 
-    def all_coupons(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all coupons in an order"""
+    def all_coupons(self, order_id: int, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all coupons in an order"""
 
         return self._api.v2.get_many(f'/orders/{order_id}/coupons', **kwargs)

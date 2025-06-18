@@ -1,4 +1,4 @@
-from typing import Any, Generator, Unpack
+from typing import Any, Iterator, Unpack
 
 from bigc.api_client import BigCommerceAPIClient, RequestOptions
 
@@ -7,8 +7,8 @@ class BigCommerceProductsAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, **kwargs: Unpack[RequestOptions]) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for all products"""
+    def all(self, **kwargs: Unpack[RequestOptions]) -> Iterator[dict[str, Any]]:
+        """Return an iterator for all products"""
 
         return self._api.v3.get_many('/catalog/products', **kwargs)
 
@@ -31,6 +31,6 @@ class BigCommerceProductsAPI:
         """Delete a specific product by its ID"""
         return self._api.v3.delete(f'/catalog/products/{product_id}', **kwargs)
 
-    def get_pricing(self, data: dict[str, Any], **kwargs) -> Generator[dict[str, Any], None, None]:
-        """Return a generator for batch product pricing"""
+    def get_pricing(self, data: dict[str, Any], **kwargs) -> Iterator[dict[str, Any]]:
+        """Return an iterator for batch product pricing"""
         return self._api.v3.post('/pricing/products', json=data, **kwargs)

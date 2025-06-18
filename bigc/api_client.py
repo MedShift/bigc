@@ -1,7 +1,6 @@
 import itertools
 from abc import ABC, abstractmethod
-from collections.abc import Generator
-from typing import Any, NoReturn, TypedDict, Unpack
+from typing import Any, Iterator, NoReturn, TypedDict, Unpack
 
 import requests
 
@@ -81,8 +80,13 @@ class BigCommerceRequestClient(ABC):
         return self.request('DELETE', *args, **kwargs)
 
     @abstractmethod
-    def get_many(self, path: str, *, page_size: int | None = None, **kwargs: Unpack[RequestOptions]) -> Generator[
-        Any, None, None]:
+    def get_many(
+        self,
+        path: str,
+        *,
+        page_size: int | None = None,
+        **kwargs: Unpack[RequestOptions],
+    ) -> Iterator[Any]:
         """Make a request to a paginated BigCommerce API endpoint"""
         pass
 
@@ -138,7 +142,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
         *,
         page_size: int | None = None,
         **kwargs: Unpack[RequestOptions],
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         page_size = MAX_V2_PAGE_SIZE if page_size is None else int(page_size)
 
         kwargs['params'] = kwargs.get('params') or {}
@@ -184,7 +188,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         *,
         page_size: int | None = None,
         **kwargs: Unpack[RequestOptions],
-    ) -> Generator[Any, None, None]:
+    ) -> Iterator[Any]:
         page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
 
         kwargs['params'] = kwargs.get('params') or {}
