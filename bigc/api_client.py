@@ -98,15 +98,15 @@ class BigCommerceRequestClient(ABC):
         }
 
     @staticmethod
-    def _process_params(params: dict[str, Any] | None) -> dict[str, Any] | None:
+    def _process_params(params: dict[str, Any] | None) -> dict[str, str] | None:
         if not params:
             return None
 
-        def _process_param(value: Any) -> Any:
+        def _process_param(value: Any) -> str:
             if isinstance(value, list | tuple | set):
                 return ','.join(map(str, value))
 
-            return value
+            return str(value)
 
         return {k: _process_param(v) for k, v in params.items()}
 
