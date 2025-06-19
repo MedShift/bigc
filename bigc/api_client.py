@@ -24,7 +24,7 @@ class BigCommerceRequestClient(ABC):
         data: Any = None,
         json: Any = None,
         params: dict[str, Any] | None = None,
-        headers: dict[str, Any] | None = None,
+        headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> Any:
         """Make a request to the BigCommerce API (uses Requests internally)"""
