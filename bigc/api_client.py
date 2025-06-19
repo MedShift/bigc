@@ -21,16 +21,12 @@ class BigCommerceRequestClient(ABC):
         method: str,
         path: str,
         *,
-        data: Any = None,
         json: Any = None,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
         timeout: float | None = None,
     ) -> Any:
         """Make a request to the BigCommerce API (uses Requests internally)"""
-
-        if data is not None and json is not None:
-            raise ValueError('Only one of data= or json= may be specified at one time')
 
         headers = self._get_standard_request_headers() | (headers or {})
 
@@ -41,7 +37,6 @@ class BigCommerceRequestClient(ABC):
             response = requests.request(
                 method,
                 self._prepare_url(path),
-                data=data,
                 json=json,
                 params=self._process_params(params),
                 headers=headers,
