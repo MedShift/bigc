@@ -21,12 +21,12 @@ class BigCommerceOrdersAPI:
     def create(self, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Create an order"""
 
-        return self._api.v2.post('/orders', json=data, params=params, timeout=timeout)
+        return self._api.v2.post('/orders', data=data, params=params, timeout=timeout)
 
     def update(self, order_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update a specific order by its ID"""
 
-        return self._api.v2.put(f'/orders/{order_id}', json=data, timeout=timeout)
+        return self._api.v2.put(f'/orders/{order_id}', data=data, timeout=timeout)
 
     def archive(self, order_id: int, *, timeout: float | None = None) -> None:
         """Archive a specific order by its ID"""
@@ -46,12 +46,12 @@ class BigCommerceOrdersAPI:
     def get_refund_quote(self, order_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Get a refund quote for an order by ID"""
 
-        return self._api.v3.post(f'/orders/{order_id}/payment_actions/refund_quotes', json=data, timeout=timeout)
+        return self._api.v3.post(f'/orders/{order_id}/payment_actions/refund_quotes', data=data, timeout=timeout)
 
     def create_refund(self, order_id: int, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Create a refund for an order by ID"""
 
-        return self._api.v3.post(f'/orders/{order_id}/payment_actions/refunds', json=data, params=params, timeout=timeout)
+        return self._api.v3.post(f'/orders/{order_id}/payment_actions/refunds', data=data, params=params, timeout=timeout)
 
     def all_refunds(self, order_id: int | None = None, params: dict[str, Any] | None = None, timeout: float | None = None) -> Iterator[dict[str, Any]]:
         """Return an iterator for all refunds, optionally filtered by order"""
@@ -89,7 +89,7 @@ class BigCommerceOrdersAPI:
     def update_shipping_address(self, order_id: int, address_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update a specific shipping address in an order by ID"""
 
-        return self._api.v2.put(f'/orders/{order_id}/shipping_addresses/{address_id}', json=data, timeout=timeout)
+        return self._api.v2.put(f'/orders/{order_id}/shipping_addresses/{address_id}', data=data, timeout=timeout)
 
     def all_shipments(self, order_id: int, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> Iterator[dict[str, Any]]:
         """Returns all shipments for a specified order"""
@@ -104,12 +104,12 @@ class BigCommerceOrdersAPI:
     def create_shipment(self, order_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Creates an order shipment for the specified order"""
 
-        return self._api.v2.post(f'/orders/{order_id}/shipments', json=data, timeout=timeout)
+        return self._api.v2.post(f'/orders/{order_id}/shipments', data=data, timeout=timeout)
 
     def update_shipment(self, order_id: int, shipment_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Updates an order shipment for the specified order"""
 
-        return self._api.v2.put(f'/orders/{order_id}/shipments/{shipment_id}', json=data, timeout=timeout)
+        return self._api.v2.put(f'/orders/{order_id}/shipments/{shipment_id}', data=data, timeout=timeout)
 
     def delete_shipment(self, order_id: int, shipment_id: int, *, timeout: float | None = None) -> None:
         """Deletes specific shipment by its ID"""

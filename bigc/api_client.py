@@ -21,7 +21,7 @@ class BigCommerceRequestClient(ABC):
         method: str,
         path: str,
         *,
-        json: Any = None,
+        data: Any = None,
         params: dict[str, Any] | None = None,
         headers: dict[str, str] | None = None,
         timeout: float | None = None,
@@ -37,7 +37,7 @@ class BigCommerceRequestClient(ABC):
             response = requests.request(
                 method,
                 self._prepare_url(path),
-                json=json,
+                data=data,
                 params=self._process_params(params),
                 headers=headers,
                 timeout=timeout,

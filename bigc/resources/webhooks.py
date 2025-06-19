@@ -20,12 +20,12 @@ class BigCommerceWebhooksAPI:
     def create(self, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Create a webhook under a specific scope"""
 
-        return self._api.v3.post('/hooks', json=data, params=params, timeout=timeout)
+        return self._api.v3.post('/hooks', data=data, params=params, timeout=timeout)
 
     def update(self, webhook_id: int, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Update a specific webhook by its ID"""
 
-        return self._api.v3.put(f'/hooks/{webhook_id}', json=data, params=params, timeout=timeout)
+        return self._api.v3.put(f'/hooks/{webhook_id}', data=data, params=params, timeout=timeout)
 
     def delete(self, webhook_id: int, *, timeout: float | None = None) -> dict[str, Any]:
         """Delete a specific webhook by its ID"""

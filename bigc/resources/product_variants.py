@@ -20,12 +20,12 @@ class BigCommerceProductVariantsAPI:
     def create(self, product_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Create a product variant"""
 
-        return self._api.v3.post(f'/catalog/products/{product_id}/variants', json=data, timeout=timeout)
+        return self._api.v3.post(f'/catalog/products/{product_id}/variants', data=data, timeout=timeout)
 
     def update(self, product_id: int, variant_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update a specific product variant by its ID"""
 
-        return self._api.v3.put(f'/catalog/products/{product_id}/variants/{variant_id}', json=data, timeout=timeout)
+        return self._api.v3.put(f'/catalog/products/{product_id}/variants/{variant_id}', data=data, timeout=timeout)
 
     def delete(self, product_id: int, variant_id: int, *, timeout: float | None = None) -> dict[str, Any]:
         """Delete a specific product variant by its ID"""

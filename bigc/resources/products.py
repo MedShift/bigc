@@ -20,12 +20,12 @@ class BigCommerceProductsAPI:
     def create(self, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Create a product"""
 
-        return self._api.v3.post('/catalog/products', json=data, params=params, timeout=timeout)
+        return self._api.v3.post('/catalog/products', data=data, params=params, timeout=timeout)
 
     def update(self, product_id: int, data: dict[str, Any], *, params: dict[str, Any] | None = None, timeout: float | None = None) -> dict[str, Any]:
         """Update a specific product by its ID"""
 
-        return self._api.v3.put(f'/catalog/products/{product_id}', json=data, params=params, timeout=timeout)
+        return self._api.v3.put(f'/catalog/products/{product_id}', data=data, params=params, timeout=timeout)
 
     def delete(self, product_id: int, *, timeout: float | None = None) -> dict[str, Any]:
         """Delete a specific product by its ID"""
@@ -35,4 +35,4 @@ class BigCommerceProductsAPI:
     def get_pricing(self, data: dict[str, Any], *, timeout: float | None = None) -> Iterator[dict[str, Any]]:
         """Return an iterator for batch product pricing"""
 
-        return self._api.v3.post('/pricing/products', json=data, timeout=timeout)
+        return self._api.v3.post('/pricing/products', data=data, timeout=timeout)

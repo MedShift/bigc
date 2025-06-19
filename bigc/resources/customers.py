@@ -29,7 +29,7 @@ class BigCommerceCustomersAPI:
     def create_many(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
         """Create many customers"""
 
-        return self._api.v3.post('/customers', json=data, timeout=timeout)
+        return self._api.v3.post('/customers', data=data, timeout=timeout)
 
     def create(self, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Create a single customer"""
@@ -39,7 +39,7 @@ class BigCommerceCustomersAPI:
     def update_many(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
         """Update many customers"""
 
-        return self._api.v3.put('/customers', json=data, timeout=timeout)
+        return self._api.v3.put('/customers', data=data, timeout=timeout)
 
     def update(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update a single customer"""
@@ -66,7 +66,7 @@ class BigCommerceCustomersAPI:
     def update_form_fields(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
         """Update form-field values"""
 
-        return self._api.v3.put('/customers/form-field-values', json=data, timeout=timeout)
+        return self._api.v3.put('/customers/form-field-values', data=data, timeout=timeout)
 
     def update_form_field(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update a single form-field value"""
@@ -95,7 +95,7 @@ class BigCommerceCustomersAPI:
     def create_addresses(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
         """Create many addresses"""
 
-        return self._api.v3.post('/customers/addresses', json=data, timeout=timeout)
+        return self._api.v3.post('/customers/addresses', data=data, timeout=timeout)
 
     def create_address(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Add an address to the customer's address book"""
@@ -108,7 +108,7 @@ class BigCommerceCustomersAPI:
     def update_addresses(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
         """Update many addresses"""
 
-        return self._api.v3.put('/customers/addresses', json=data, timeout=timeout)
+        return self._api.v3.put('/customers/addresses', data=data, timeout=timeout)
 
     def update_address(self, address_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update an address by its ID"""
