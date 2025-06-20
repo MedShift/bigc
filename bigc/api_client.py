@@ -76,7 +76,12 @@ class BigCommerceRequestClient(ABC):
             message, errors = None, None
 
         exc_class = BigCommerceException.get_exc_class_for_status_code(response.status_code)
-        raise exc_class(message, response, errors)
+        raise exc_class(
+            message=message,
+            status_code=response.status_code,
+            response=response,
+            errors=errors,
+        )
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):

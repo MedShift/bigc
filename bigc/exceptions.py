@@ -3,8 +3,6 @@ from __future__ import annotations
 import inspect
 from typing import Any, ClassVar
 
-import requests
-
 _status_code_exc_class_map: dict[int, type[BigCommerceException]] = {}
 
 
@@ -16,27 +14,23 @@ class BigCommerceException(Exception):
 
     def __init__(self,
                  message: str | None = None,
+                 status_code: int | None = None,
                  response: Any = None,
                  errors: dict[str, str] | None = None):
         """
         :param message: A short description of the error's cause.
+        :param status_code: The HTTP status code of the API response.
         :param response: The underlying API response, if any, that caused the
             error. Currently, this is a ``requests.Response``, but this is an
             implementation detail that's subject to change.
         :param errors: A dictionary that may contain additional error details.
         """
-        super().__init__(message, response, errors)
+        super().__init__(message, status_code, response, errors)
 
         self.message = message
+        self.status_code = status_code
         self.response = response
         self.errors = errors
-
-    @property
-    def status_code(self) -> int | None:
-        """The HTTP status code of the response, if one was provided."""
-        if isinstance(self.response, requests.Response):
-            return self.response.status_code
-        return None
 
     def __str__(self):
         return self.message or self.DEFAULT_MESSAGE
