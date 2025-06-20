@@ -1,119 +1,146 @@
-from collections.abc import Iterator
-from typing import Any, Iterable, Optional
-from urllib.parse import urlencode, urlparse, urlunparse
+from typing import Any, Iterator
 
-from bigc.api_client import BigCommerceAPIClient
 from bigc.exceptions import DoesNotExistError, InvalidDataError
+from bigc.api_client import BigCommerceAPIClient
 
 
 class BigCommerceCustomersAPI:
     def __init__(self, api_client: BigCommerceAPIClient):
         self._api = api_client
 
-    def all(self, *, id_in: Iterable[int] = None, include_formfields: bool = False,
-            include_storecredit: bool = False) -> Iterator[dict]:
+    def all(self, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> Iterator[dict[str, Any]]:
         """Return an iterator for all customers"""
-        url_parts = urlparse('/customers')
+        return self._api.v3.get_many('/customers', params=params, timeout=timeout)
 
-        query_dict = {}
-
-        if id_in is not None:
-            query_dict['id:in'] = ','.join(map(str, id_in))
-
-        include = []
-        if include_storecredit:
-            include.append('storecredit')
-        if include_formfields:
-            include.append('formfields')
-        if include:
-            query_dict['include'] = ','.join(include)
-
-        url_parts = url_parts._replace(query=urlencode(query_dict))
-
-        return self._api.v3.get_many(urlunparse(url_parts))
-
-    def get(self, customer_id: int, *, include_formfields: bool = False,
-            include_storecredit: bool = False) -> dict:
+    def get(
+            self,
+            customer_id: int,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+    ) -> dict[str, Any]:
         """Get a specific customer by its ID"""
-        url_parts = urlparse('/customers')
-
-        query_dict = {'id:in': customer_id}
-
-        include = []
-        if include_storecredit:
-            include.append('storecredit')
-        if include_formfields:
-            include.append('formfields')
-        if include:
-            query_dict['include'] = ','.join(include)
-
-        url_parts = url_parts._replace(query=urlencode(query_dict))
-
-        try:
-            return self._api.v3.get(urlunparse(url_parts))[0]
-        except IndexError:
-            raise DoesNotExistError() from None
-
-    def create(self, first_name: str, last_name: str, email: str, **kwargs) -> dict:
-        """Create a single customer"""
-        payload = {
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': email,
-            **kwargs,
-        }
-        return self._api.v3.post('/customers', json=[payload])[0]
-
-    def update(self, customer_id: int, data: dict) -> dict:
-        """Update a single customer"""
-        payload = {
-            'id': customer_id,
-            **data,
-        }
-        return self._api.v3.put('/customers', json=[payload])[0]
-
-    def delete(self, customer_id: int) -> None:
-        """Delete a specific customer by its ID"""
-        self._api.v3.delete(f'/customers?id:in={customer_id}')
-
-    def update_form_field(self, customer_id: int, field_name: str, value: Any) -> dict:
-        """Update a form field value for a single customer"""
-        payload = [{
-            'customer_id': customer_id,
-            'name': field_name,
-            'value': value,
-        }]
-        return self._api.v3.put('/customers/form-field-values', json=payload)[0]
-
-    def all_addresses(self, customer_id: Optional[int] = None) -> Iterator[dict]:
-        """Get all addresses, optionally filtered by a customer's address book"""
         params = {
-            **({'customer_id:in': customer_id} if customer_id else {}),
+            **(params or {}),
+            'id:in': customer_id,
         }
 
-        return self._api.v3.get_many(f'/customers/addresses', params=params)
-
-    def get_address(self, customer_id: int, address_id: int) -> dict:
-        """Get one address by its ID, from a customer's address book"""
         try:
-            return self._api.v3.get(f'/customers/addresses?customer_id:in={customer_id}&id:in={address_id}')[0]
+            return self._api.v3.get('/customers', params=params, timeout=timeout)[0]
         except IndexError:
             raise DoesNotExistError() from None
 
-    def create_address(self, customer_id: int, **kwargs) -> dict:
+    def create_many(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
+        """Create many customers"""
+        return self._api.v3.post('/customers', data=data, timeout=timeout)
+
+    def create(self, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+        """Create a single customer"""
+        return self.create_many([data], timeout=timeout)[0]
+
+    def update_many(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
+        """Update many customers"""
+        return self._api.v3.put('/customers', data=data, timeout=timeout)
+
+    def update(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+        """Update a single customer"""
+        data['id'] = customer_id
+
+        return self.update_many([data], timeout=timeout)[0]
+
+    def delete_many(self, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> None:
+        """Delete many customers"""
+        self._api.v3.delete(f'/customers', params=params, timeout=timeout)
+
+    def delete(self, customer_id: int, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> None:
+        """Delete a single customer"""
+        params = {
+            **(params or {}),
+            'id:in': customer_id,
+        }
+
+        self.delete_many(params=params, timeout=timeout)
+
+    def update_form_fields(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
+        """Update form-field values"""
+        return self._api.v3.put('/customers/form-field-values', data=data, timeout=timeout)
+
+    def update_form_field(
+            self,
+            customer_id: int,
+            data: dict[str, Any],
+            *,
+            timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Update a single form-field value"""
+        return self.update_form_fields([{'customer_id': customer_id, **data}], timeout=timeout)[0]
+
+    def all_addresses(
+            self,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+    ) -> Iterator[dict[str, Any]]:
+        """Get all addresses, optionally filtered by a customer's address book"""
+        return self._api.v3.get_many(f'/customers/addresses', params=params, timeout=timeout)
+
+    def get_address(
+            self,
+            customer_id: int,
+            address_id: int,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+    ) -> dict[str, Any]:
+        """Get one address by its ID, from a customer's address book"""
+        params = {
+            **(params or {}),
+            'customer_id:in': customer_id,
+            'id:in': address_id,
+        }
+
+        try:
+            return self._api.v3.get(f'/customers/addresses', params=params, timeout=timeout)[0]
+        except IndexError:
+            raise DoesNotExistError() from None
+
+    def create_addresses(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
+        """Create many addresses"""
+        return self._api.v3.post('/customers/addresses', data=data, timeout=timeout)
+
+    def create_address(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Add an address to the customer's address book"""
         try:
-            return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])[0]
+            return self.create_addresses([{'customer_id': customer_id, **data}], timeout=timeout)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
-    def update_address(self, address_id: int, **kwargs) -> dict:
+    def update_addresses(self, data: list[dict[str, Any]], *, timeout: float | None = None) -> list[dict[str, Any]]:
+        """Update many addresses"""
+        return self._api.v3.put('/customers/addresses', data=data, timeout=timeout)
+
+    def update_address(self, address_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Update an address by its ID"""
         try:
-            return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])[0]
+            return self.update_addresses([{'id': address_id, **data}], timeout=timeout)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
-    def delete_address(self, address_id: int) -> None:
+    def delete_addresses(self, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> None:
+        """Delete many addresses"""
+        self._api.v3.delete(f"/customers/addresses", params=params, timeout=timeout)
+
+    def delete_address(
+            self,
+            address_id: int,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+    ) -> None:
         """Delete an address by its ID"""
-        self._api.v3.delete(f"/customers/addresses?id:in={address_id}")
+        params = {
+            **(params or {}),
+            'id:in': address_id,
+        }
+
+        self.delete_addresses(params=params, timeout=timeout)
