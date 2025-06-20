@@ -1,4 +1,3 @@
-import copy
 import itertools
 from abc import ABC, abstractmethod
 from typing import Any, Iterator, NoReturn
@@ -148,7 +147,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
     ) -> Iterator[Any]:
         page_size = MAX_V2_PAGE_SIZE if page_size is None else int(page_size)
 
-        params = copy.deepcopy(params) if params else {}
+        params = {**params} if params else {}
 
         if 'limit' in params or 'page' in params:
             raise ValueError('path already has pagination query params')
@@ -195,7 +194,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
     ) -> Iterator[Any]:
         page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
 
-        params = copy.deepcopy(params) if params else {}
+        params = {**params} if params else {}
 
         if 'limit' in params or 'page' in params:
             raise ValueError('path already has pagination query params')
