@@ -39,7 +39,7 @@ class BigCommerceRequestClient(ABC):
             response = requests.request(
                 method,
                 self._prepare_url(path),
-                data=data,
+                json=data,
                 params=self._process_params(params),
                 headers=self._get_standard_request_headers() | headers,
                 timeout=timeout,
