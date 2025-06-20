@@ -29,12 +29,12 @@ class BigCommerceRequestClient(ABC):
     ) -> Any:
         """Make a request to the BigCommerce API (uses Requests internally)"""
 
-        self._validate_path(path)
-
-        headers = self._get_standard_request_headers() | (headers or {})
-
+        if headers is None:
+            headers = {}
         if timeout is None:
             timeout = self.timeout
+
+        self._validate_path(path)
 
         try:
             response = requests.request(
@@ -42,7 +42,7 @@ class BigCommerceRequestClient(ABC):
                 self._prepare_url(path),
                 data=data,
                 params=self._process_params(params),
-                headers=headers,
+                headers=self._get_standard_request_headers() | headers,
                 timeout=timeout,
             )
         except requests.Timeout as exc:
