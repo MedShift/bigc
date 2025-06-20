@@ -215,9 +215,3 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
                 raise TypeError(f"expected list, got {type(res_data['data']).__name__}")
 
             yield from res_data['data']
-
-
-class BigCommerceAPIClient:
-    def __init__(self, *args, **kwargs):
-        self.v2: BigCommerceV2APIClient = BigCommerceV2APIClient(*args, **kwargs)
-        self.v3: BigCommerceV3APIClient = BigCommerceV3APIClient(*args, **kwargs)
