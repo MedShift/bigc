@@ -1,6 +1,6 @@
 from typing import Any, Iterator
 
-from bigc.api_client import BigCommerceAPIClient, BigCommerceV2APIClient
+from bigc.api_client import BigCommerceV2APIClient
 
 
 class BigCommerceCustomerGroupsV2API:
