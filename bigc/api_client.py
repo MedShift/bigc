@@ -29,6 +29,8 @@ class BigCommerceRequestClient(ABC):
     ) -> Any:
         """Make a request to the BigCommerce API (uses Requests internally)"""
 
+        self._validate_path(path)
+
         headers = self._get_standard_request_headers() | (headers or {})
 
         if timeout is None:
@@ -85,6 +87,14 @@ class BigCommerceRequestClient(ABC):
     @abstractmethod
     def _prepare_url(self, path: str) -> str:
         pass
+
+    @staticmethod
+    def _validate_path(path: str) -> None:
+        if '?' in path:
+            raise ValueError('path should not contain query parameters')
+
+        if '#' in path:
+            raise ValueError('path should not contain fragment')
 
     def _get_standard_request_headers(self) -> dict[str, str]:
         return {
