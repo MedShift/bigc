@@ -150,7 +150,7 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
         params = {**params} if params else {}
 
         if 'limit' in params or 'page' in params:
-            raise ValueError('path already has pagination query params')
+            raise ValueError('params already has pagination values')
 
         params['limit'] = page_size
 
@@ -197,7 +197,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         params = {**params} if params else {}
 
         if 'limit' in params or 'page' in params:
-            raise ValueError('path already has pagination query params')
+            raise ValueError('params already has pagination values')
 
         params['limit'] = page_size
 
