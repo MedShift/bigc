@@ -3,7 +3,7 @@ from typing import Any, Iterable, Optional
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
-from bigc.exceptions import BigCommerceAPIException, ResourceNotFoundError
+from bigc.exceptions import DoesNotExistError, InvalidDataError
 
 
 class BigCommerceCustomersAPI:
@@ -52,7 +52,7 @@ class BigCommerceCustomersAPI:
         try:
             return self._api.v3.get(urlunparse(url_parts))[0]
         except IndexError:
-            raise ResourceNotFoundError()
+            raise DoesNotExistError() from None
 
     def create(self, first_name: str, last_name: str, email: str, **kwargs) -> dict:
         """Create a single customer"""
@@ -98,21 +98,21 @@ class BigCommerceCustomersAPI:
         try:
             return self._api.v3.get(f'/customers/addresses?customer_id:in={customer_id}&id:in={address_id}')[0]
         except IndexError:
-            raise ResourceNotFoundError()
+            raise DoesNotExistError() from None
 
     def create_address(self, customer_id: int, **kwargs) -> dict:
         """Add an address to the customer's address book"""
         try:
             return self._api.v3.post('/customers/addresses', json=[{'customer_id': customer_id, **kwargs}])[0]
         except IndexError:
-            raise BigCommerceAPIException('This address already exists')
+            raise InvalidDataError('This address already exists.') from None
 
     def update_address(self, address_id: int, **kwargs) -> dict:
         """Update an address by its ID"""
         try:
             return self._api.v3.put('/customers/addresses', json=[{'id': address_id, **kwargs}])[0]
         except IndexError:
-            raise BigCommerceAPIException('This address already exists')
+            raise InvalidDataError('This address already exists.') from None
 
     def delete_address(self, address_id: int) -> None:
         """Delete an address by its ID"""

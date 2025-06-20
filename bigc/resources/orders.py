@@ -3,7 +3,7 @@ from typing import Optional
 from urllib.parse import urlencode, urlparse, urlunparse
 
 from bigc.api_client import BigCommerceAPIClient
-from bigc.exceptions import ResourceNotFoundError
+from bigc.exceptions import DoesNotExistError
 
 
 class BigCommerceOrdersAPI:
@@ -80,7 +80,7 @@ class BigCommerceOrdersAPI:
         try:
             return self._api.v3.get(f'/orders/payment_actions/refunds?id:in={refund_id}')[0]
         except IndexError:
-            raise ResourceNotFoundError()
+            raise DoesNotExistError() from None
 
     def all_shipping_addresses(self, order_id: int) -> Iterator[dict]:
         """Return an iterator for all order shipping addresses in an order"""

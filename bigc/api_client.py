@@ -6,7 +6,7 @@ from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 import requests
 
-from bigc import exceptions
+from bigc.exceptions import BigCommerceException, BigCommerceNetworkError, GatewayTimeoutError
 
 MAX_V2_PAGE_SIZE = 250
 MAX_V3_PAGE_SIZE = 250
@@ -26,13 +26,15 @@ class BigCommerceRequestClient(ABC):
         try:
             response = requests.request(method, self._prepare_url(path), **kwargs)
         except requests.Timeout as exc:
-            raise exceptions.BigCommerceServerError('Request timed out') from exc
+            raise GatewayTimeoutError() from exc
+        except requests.RequestException as exc:
+            raise BigCommerceNetworkError() from exc
 
         if response.ok:
             # Return None for empty responses instead of raising
             return response.json() if response.text else None
         else:
-            self._handle_error(response)
+            self._handle_error_response(response)
 
     def get(self, *args, **kwargs):
         """Alias for ``request('GET', ...)``"""
@@ -67,36 +69,19 @@ class BigCommerceRequestClient(ABC):
         }
 
     @staticmethod
-    def _handle_error(response: requests.Response) -> NoReturn:
-        # TODO: Try to extract an error message from the response body
+    def _handle_error_response(response: requests.Response) -> NoReturn:
+        try:
+            message, errors = BigCommerceException.extract_error_message(response.json())
+        except requests.JSONDecodeError:
+            message, errors = None, None
 
-        # Specific errors
-        if response.status_code == 400:
-            raise exceptions.BadRequestError(response=response)
-        if response.status_code == 401:
-            raise exceptions.InvalidAuthorizationError(response=response)
-        if response.status_code == 403:
-            raise exceptions.InsufficientScopesError(response=response)
-        if response.status_code == 404:
-            raise exceptions.ResourceNotFoundError(response=response)
-        if response.status_code == 429:
-            raise exceptions.RateLimitExceededError(response=response)
-        if response.status_code == 500:
-            raise exceptions.InternalBigCommerceError(response=response)
-        if response.status_code == 503:
-            raise exceptions.StoreUnavailableError(response=response)
-        if response.status_code == 507:
-            raise exceptions.PlanLimitExceededError(response=response)
-
-        # General errors
-        if 300 <= response.status_code < 400:
-            raise exceptions.BigCommerceRedirectionError(response=response)
-        if 400 <= response.status_code < 500:
-            raise exceptions.BigCommerceClientError(response=response)
-        if 500 <= response.status_code < 600:
-            raise exceptions.BigCommerceServerError(response=response)
-
-        raise exceptions.BigCommerceAPIException(response=response)
+        exc_class = BigCommerceException.get_exc_class_for_status_code(response.status_code)
+        raise exc_class(
+            message=message,
+            status_code=response.status_code,
+            response=response,
+            errors=errors,
+        )
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):
