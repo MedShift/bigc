@@ -10,7 +10,6 @@ class BigCommerceAPI:
         self.api_v3 = api_v3 = BigCommerceV3APIClient(store_hash, access_token, timeout)
 
         self.carts_v3: BigCommerceCartsV3API = BigCommerceCartsV3API(api_v3)
-        self.catalog_v3: BigCommerceCatalogV3API = BigCommerceCatalogV3API(api_v3)
         self.checkouts_v3: BigCommerceCheckoutsV3API = BigCommerceCheckoutsV3API(api_v3)
         self.currencies_v2: BigCommerceCurrenciesV2API = BigCommerceCurrenciesV2API(api_v2)
         self.customer_groups_v2: BigCommerceCustomerGroupsV2API = BigCommerceCustomerGroupsV2API(api_v2)
@@ -18,4 +17,7 @@ class BigCommerceAPI:
         self.orders_v2: BigCommerceOrdersV2API = BigCommerceOrdersV2API(api_v2)
         self.orders_v3: BigCommerceOrdersV3API = BigCommerceOrdersV3API(api_v3)
         self.pricing_v3: BigCommercePricingV3API = BigCommercePricingV3API(api_v3)
+        self.product_categories_v3: BigCommerceProductCategoriesV3API = BigCommerceProductCategoriesV3API(api_v3)
+        self.product_variants_v3: BigCommerceProductVariantsV3API = BigCommerceProductVariantsV3API(api_v3)
+        self.products_v3: BigCommerceProductsV3API = BigCommerceProductsV3API(api_v3)
         self.webhooks_v3: BigCommerceWebhooksV3API = BigCommerceWebhooksV3API(api_v3)

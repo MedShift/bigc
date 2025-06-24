@@ -26,6 +26,7 @@ class BigCommerceOrdersV3API:
     def all_refunds(
             self,
             order_id: int | None = None,
+            *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
     ) -> Iterator[dict[str, Any]]:
