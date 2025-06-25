@@ -233,7 +233,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
             if not (
                 # end_cursor will still be provided if the next page is empty
                 response['meta']['cursor_pagination']['links'].get('next')
-                or response['data']
+                and response['data']
             ):
                 break
 
