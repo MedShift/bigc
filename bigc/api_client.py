@@ -220,8 +220,8 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         params: dict[str, Any],
         timeout: float | None,
     ) -> Iterator[Any]:
-        if 'limit' in params or 'after' in params:
-            raise ValueError('params already has pagination values (limit and/or after)')
+        if any(param in params for param in ('limit', 'before', 'after')):
+            raise ValueError('params already has pagination values (limit, before, and/or after)')
 
         params['limit'] = page_size
 
