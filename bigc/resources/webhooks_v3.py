@@ -1,11 +1,11 @@
 from typing import Any, Iterator
 
-from bigc.api_client import BigCommerceAPIClient
+from bigc.api_client import BigCommerceV3APIClient
 
 
-class BigCommerceWebhooksAPI:
-    def __init__(self, api_client: BigCommerceAPIClient):
-        self._api = api_client
+class BigCommerceWebhooksV3API:
+    def __init__(self, api: BigCommerceV3APIClient):
+        self._api = api
 
     def all(
             self,
@@ -14,11 +14,11 @@ class BigCommerceWebhooksAPI:
             timeout: float | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Return an iterator for all webhooks"""
-        return self._api.v3.get_many('/hooks', params=params, timeout=timeout)
+        return self._api.get_many('/hooks', params=params, timeout=timeout)
 
     def get(self, webhook_id: int, *, timeout: float | None = None) -> dict[str, Any]:
         """Get a specific webhook by its ID"""
-        return self._api.v3.get(f'/hooks/{webhook_id}', timeout=timeout)
+        return self._api.get(f'/hooks/{webhook_id}', timeout=timeout)
 
     def create(
             self,
@@ -28,7 +28,7 @@ class BigCommerceWebhooksAPI:
             timeout: float | None = None,
     ) -> dict[str, Any]:
         """Create a webhook under a specific scope"""
-        return self._api.v3.post('/hooks', data=data, params=params, timeout=timeout)
+        return self._api.post('/hooks', data=data, params=params, timeout=timeout)
 
     def update(
             self,
@@ -39,8 +39,8 @@ class BigCommerceWebhooksAPI:
             timeout: float | None = None,
     ) -> dict[str, Any]:
         """Update a specific webhook by its ID"""
-        return self._api.v3.put(f'/hooks/{webhook_id}', data=data, params=params, timeout=timeout)
+        return self._api.put(f'/hooks/{webhook_id}', data=data, params=params, timeout=timeout)
 
     def delete(self, webhook_id: int, *, timeout: float | None = None) -> dict[str, Any]:
         """Delete a specific webhook by its ID"""
-        return self._api.v3.delete(f'/hooks/{webhook_id}', timeout=timeout)
+        return self._api.delete(f'/hooks/{webhook_id}', timeout=timeout)
