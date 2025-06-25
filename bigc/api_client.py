@@ -149,8 +149,8 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
 
         params = {**params} if params else {}
 
-        if 'limit' in params or 'page' in params:
-            raise ValueError('params already has pagination values')
+        if params.keys() & {'limit', 'offset'}:
+            raise ValueError('params already has pagination values (limit and/or offset)')
 
         params['limit'] = page_size
 
@@ -192,7 +192,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         params: dict[str, Any],
         timeout: float | None,
     ) -> Iterator[Any]:
-        if 'limit' in params or 'page' in params:
+        if params.keys() & {'limit', 'offset'}:
             raise ValueError('params already has pagination values (limit and/or offset)')
 
         params['limit'] = page_size
@@ -220,7 +220,7 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         params: dict[str, Any],
         timeout: float | None,
     ) -> Iterator[Any]:
-        if any(param in params for param in ('limit', 'before', 'after')):
+        if params.keys() & {'limit', 'before', 'after'}:
             raise ValueError('params already has pagination values (limit, before, and/or after)')
 
         params['limit'] = page_size
