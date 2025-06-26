@@ -42,7 +42,10 @@ class BigCommerceRequestClient(ABC):
         if timeout is None:
             timeout = self.timeout
         if retries is None and method != 'POST':
-            retries = self.retries if self.retries is not None else (2 if method == 'GET' else 0)
+            if self.retries is None:
+                retries = 2 if method == 'GET' else 0
+            else:
+                retries = self.retries
 
         self._validate_path(path)
         self._validate_retries(method, retries)
