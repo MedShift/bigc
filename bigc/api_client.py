@@ -149,8 +149,8 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
 
         params = {**params} if params else {}
 
-        if 'limit' in params or 'page' in params:
-            raise ValueError('params already has pagination values')
+        if params.keys() & {'limit', 'offset'}:
+            raise ValueError('params already has pagination values (limit and/or offset)')
 
         params['limit'] = page_size
 
@@ -184,20 +184,16 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
         response = super().request(*args, **kwargs)
         return None if response is None else response['data']
 
-    def get_many(
+    def _get_many_using_limit_offset(
         self,
         path: str,
         *,
-        page_size: int | None = None,
-        params: dict[str, Any] | None = None,
-        timeout: float | None = None,
+        page_size: int,
+        params: dict[str, Any],
+        timeout: float | None,
     ) -> Iterator[Any]:
-        page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
-
-        params = {**params} if params else {}
-
-        if 'limit' in params or 'page' in params:
-            raise ValueError('params already has pagination values')
+        if params.keys() & {'limit', 'offset'}:
+            raise ValueError('params already has pagination values (limit and/or offset)')
 
         params['limit'] = page_size
 
@@ -215,3 +211,47 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
                 raise TypeError(f"expected list, got {type(res_data['data']).__name__}")
 
             yield from res_data['data']
+
+    def _get_many_using_cursor(
+        self,
+        path: str,
+        *,
+        page_size: int,
+        params: dict[str, Any],
+        timeout: float | None,
+    ) -> Iterator[Any]:
+        if params.keys() & {'limit', 'before', 'after'}:
+            raise ValueError('params already has pagination values (limit, before, and/or after)')
+
+        params['limit'] = page_size
+
+        while True:
+            response = super().request('GET', path, params=params, timeout=timeout)
+
+            yield from response['data']
+
+            if not (
+                # end_cursor will still be provided if the next page is empty
+                response['meta']['cursor_pagination']['links'].get('next')
+                and response['data']
+            ):
+                break
+
+            params['after'] = response['meta']['cursor_pagination']['end_cursor']
+
+    def get_many(
+        self,
+        path: str,
+        *,
+        page_size: int | None = None,
+        params: dict[str, Any] | None = None,
+        timeout: float | None = None,
+        cursor: bool = False,
+    ) -> Iterator[Any]:
+        page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
+        params = {**params} if params else {}
+
+        if cursor:
+            return self._get_many_using_cursor(path, page_size=page_size, params=params, timeout=timeout)
+        else:
+            return self._get_many_using_limit_offset(path, page_size=page_size, params=params, timeout=timeout)

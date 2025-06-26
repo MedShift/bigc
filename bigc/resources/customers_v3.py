@@ -10,7 +10,7 @@ class BigCommerceCustomersV3API:
 
     def all(self, *, params: dict[str, Any] | None = None, timeout: float | None = None) -> Iterator[dict[str, Any]]:
         """Return an iterator for all customers"""
-        return self._api.get_many('/customers', params=params, timeout=timeout)
+        return self._api.get_many('/customers', params=params, timeout=timeout, cursor=True)
 
     def get(
             self,
