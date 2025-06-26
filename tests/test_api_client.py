@@ -1,5 +1,5 @@
 from typing import Any, Iterator
-from unittest.mock import MagicMock
+from unittest.mock import create_autospec, MagicMock, Mock
 
 import pytest
 import requests
@@ -30,9 +30,7 @@ def dummy_request_client() -> DummyBigCommerceRequestClient:
 
 @pytest.fixture
 def request_mock(monkeypatch):
-    mock_response = MagicMock(ok=True)
-    mock_response.text = '{"test": "response"}'
-    mock_response.json.return_value = {"test": "response"}
+    mock_response = create_autospec(requests.Response)()
 
     monkeypatch.setattr(
         'bigc.api_client.requests.request',
