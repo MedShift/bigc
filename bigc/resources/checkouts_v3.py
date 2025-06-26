@@ -16,13 +16,21 @@ class BigCommerceCheckoutsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Get a specific checkout by its ID"""
-        return self._api.get(f'/checkouts/{checkout_id}', params=params, timeout=timeout)
+        return self._api.get(f'/checkouts/{checkout_id}', params=params, timeout=timeout, retries=retries)
 
-    def update(self, checkout_id: UUIDLike, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+    def update(
+            self,
+            checkout_id: UUIDLike,
+            data: dict[str, Any],
+            *,
+            timeout: float | None = None,
+            retries: int | None = None,
+    ) -> dict[str, Any]:
         """Change customer message pertaining to an existing Checkout"""
-        return self._api.put(f'/checkouts/{checkout_id}', data=data, timeout=timeout)
+        return self._api.put(f'/checkouts/{checkout_id}', data=data, timeout=timeout, retries=retries)
 
     def add_billing_address(
             self,
@@ -39,16 +47,20 @@ class BigCommerceCheckoutsV3API:
             checkout_id: UUIDLike,
             address_id: str,
             data: dict[str, Any],
+            *,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Update an existing billing address on a checkout"""
-        return self._api.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', data=data, timeout=timeout)
+        return self._api.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', data=data, timeout=timeout, retries=retries)
 
     def add_consignment(
             self,
             checkout_id: UUIDLike,
             data: dict[str, Any],
-            params: dict[str, Any] | None = None, timeout: float | None = None,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
     ) -> dict[str, Any]:
         """Add a new consignment to a checkout"""
         return self._api.post(f'/checkouts/{checkout_id}/consignments', data=data, params=params, timeout=timeout)
@@ -58,10 +70,13 @@ class BigCommerceCheckoutsV3API:
             checkout_id: UUIDLike,
             consignment_id: str,
             data: dict[str, Any],
-            params: dict[str, Any] | None = None, timeout: float | None = None,
+            *,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Update an existing consignment's selected shipping option"""
-        return self._api.put(f'/checkouts/{checkout_id}/consignments/{consignment_id}', data=data, params=params, timeout=timeout)
+        return self._api.put(f'/checkouts/{checkout_id}/consignments/{consignment_id}', data=data, params=params, timeout=timeout, retries=retries)
 
     def delete_consignment(
             self,
@@ -70,9 +85,10 @@ class BigCommerceCheckoutsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Remove an existing consignment from a checkout"""
-        return self._api.delete(f'/checkouts/{checkout_id}/consignments/{consignment_id}', params=params, timeout=timeout)
+        return self._api.delete(f'/checkouts/{checkout_id}/consignments/{consignment_id}', params=params, timeout=timeout, retries=retries)
 
     def add_coupon(
             self,
@@ -92,9 +108,10 @@ class BigCommerceCheckoutsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Delete a coupon code from a checkout"""
-        return self._api.delete(f'/checkouts/{checkout_id}/coupons/{coupon_code}', params=params, timeout=timeout)
+        return self._api.delete(f'/checkouts/{checkout_id}/coupons/{coupon_code}', params=params, timeout=timeout, retries=retries)
 
     def add_discounts(
             self,
