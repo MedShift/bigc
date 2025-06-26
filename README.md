@@ -52,8 +52,8 @@ order_messages = bigcommerce.api_v2.get_many('/orders/101/messages')  # get_many
 ### Additional Functionality
 - Built-in retry handling:
   - `GET` requests are automatically retried for some server & network errors.
-- HTTP errors are transformed into exceptions, see `bigc/exceptions.py`
-  - Error responses are parsed to provide `e.message` and `e.errors`
+- HTTP errors are transformed into exceptions, see `bigc/exceptions.py`.
+  - Error responses are parsed to provide `e.message` and `e.errors`.
 
 ### Utilities
 
