@@ -1,7 +1,7 @@
 from typing import Any, Iterator
 
-from bigc.exceptions import DoesNotExistError, InvalidDataError
 from bigc.api_client import BigCommerceV3APIClient
+from bigc.exceptions import DoesNotExistError, InvalidDataError
 
 
 class BigCommerceCustomersV3API:
