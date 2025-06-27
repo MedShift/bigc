@@ -11,7 +11,7 @@ from .customers_v3 import BigCommerceCustomersV3API
 from .orders_v2 import BigCommerceOrdersV2API
 from .orders_v3 import BigCommerceOrdersV3API
 from .pricing_v3 import BigCommercePricingV3API
-from .product_categories_v3 import BigCommerceProductCategoriesV3API
+from .categories_v3 import BigCommerceCategoriesV3API
 from .product_variants_v3 import BigCommerceProductVariantsV3API
 from .products_v3 import BigCommerceProductsV3API
 from .webhooks_v3 import BigCommerceWebhooksV3API

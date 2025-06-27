@@ -17,7 +17,7 @@ class BigCommerceAPI:
         self.orders_v2: BigCommerceOrdersV2API = BigCommerceOrdersV2API(api_v2)
         self.orders_v3: BigCommerceOrdersV3API = BigCommerceOrdersV3API(api_v3)
         self.pricing_v3: BigCommercePricingV3API = BigCommercePricingV3API(api_v3)
-        self.product_categories_v3: BigCommerceProductCategoriesV3API = BigCommerceProductCategoriesV3API(api_v3)
+        self.categories_v3: BigCommerceCategoriesV3API = BigCommerceCategoriesV3API(api_v3)
         self.product_variants_v3: BigCommerceProductVariantsV3API = BigCommerceProductVariantsV3API(api_v3)
         self.products_v3: BigCommerceProductsV3API = BigCommerceProductsV3API(api_v3)
         self.webhooks_v3: BigCommerceWebhooksV3API = BigCommerceWebhooksV3API(api_v3)
