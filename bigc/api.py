@@ -16,6 +16,7 @@ class BigCommerceAPI:
 
         self.api_v2 = api_v2
         self.api_v3 = api_v3
+
         self.carts_v3: BigCommerceCartsV3API = BigCommerceCartsV3API(api_v3)
         self.categories_v3: BigCommerceCategoriesV3API = BigCommerceCategoriesV3API(api_v3)
         self.checkouts_v3: BigCommerceCheckoutsV3API = BigCommerceCheckoutsV3API(api_v3)
