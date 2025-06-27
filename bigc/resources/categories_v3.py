@@ -3,7 +3,7 @@ from typing import Any, Iterator
 from bigc.api_client import BigCommerceV3APIClient
 
 
-class BigCommerceProductCategoriesV3API:
+class BigCommerceCategoriesV3API:
     def __init__(self, api: BigCommerceV3APIClient):
         self._api = api
 
