@@ -16,9 +16,10 @@ class BigCommerceCartsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Get a specific cart by its ID"""
-        return self._api.get(f'/carts/{cart_id}', params=params, timeout=timeout)
+        return self._api.get(f'/carts/{cart_id}', params=params, timeout=timeout, retries=retries)
 
     def create(
             self,
@@ -30,13 +31,20 @@ class BigCommerceCartsV3API:
         """Create a new cart"""
         return self._api.post('/carts', data=data, params=params, timeout=timeout)
 
-    def update(self, cart_id: UUIDLike, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+    def update(
+            self,
+            cart_id: UUIDLike,
+            data: dict[str, Any],
+            *,
+            timeout: float | None = None,
+            retries: int | None = None,
+    ) -> dict[str, Any]:
         """Update a specific cart by its ID"""
-        return self._api.put(f'/carts/{cart_id}', data=data, timeout=timeout)
+        return self._api.put(f'/carts/{cart_id}', data=data, timeout=timeout, retries=retries)
 
-    def delete(self, cart_id: UUIDLike, *, timeout: float | None = None) -> None:
+    def delete(self, cart_id: UUIDLike, *, timeout: float | None = None, retries: int | None = None) -> None:
         """Delete a specific cart by its ID"""
-        self._api.delete(f'/carts/{cart_id}', timeout=timeout)
+        self._api.delete(f'/carts/{cart_id}', timeout=timeout, retries=retries)
 
     def add_line_items(
             self,
@@ -57,9 +65,10 @@ class BigCommerceCartsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Update a single line item in a cart"""
-        return self._api.put(f'/carts/{cart_id}/items/{item_id}', data=data, params=params, timeout=timeout)
+        return self._api.put(f'/carts/{cart_id}/items/{item_id}', data=data, params=params, timeout=timeout, retries=retries)
 
     def delete_line_item(
             self,
@@ -68,9 +77,10 @@ class BigCommerceCartsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Remove a line item from a cart"""
-        return self._api.delete(f'/carts/{cart_id}/items/{item_id}', params=params, timeout=timeout)
+        return self._api.delete(f'/carts/{cart_id}/items/{item_id}', params=params, timeout=timeout, retries=retries)
 
     def create_redirect_url(
             self,

@@ -5,9 +5,9 @@ from bigc.resources import *
 
 
 class BigCommerceAPI:
-    def __init__(self, store_hash: str, access_token: str, timeout: Optional[float] = None):
-        self.api_v2 = api_v2 = BigCommerceV2APIClient(store_hash, access_token, timeout)
-        self.api_v3 = api_v3 = BigCommerceV3APIClient(store_hash, access_token, timeout)
+    def __init__(self, store_hash: str, access_token: str, *, timeout: float | None = None, get_retries: int | None = None):
+        self.api_v2 = api_v2 = BigCommerceV2APIClient(store_hash, access_token, timeout=timeout, get_retries=get_retries)
+        self.api_v3 = api_v3 = BigCommerceV3APIClient(store_hash, access_token, timeout=timeout, get_retries=get_retries)
 
         self.carts_v3: BigCommerceCartsV3API = BigCommerceCartsV3API(api_v3)
         self.checkouts_v3: BigCommerceCheckoutsV3API = BigCommerceCheckoutsV3API(api_v3)

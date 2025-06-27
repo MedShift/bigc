@@ -13,9 +13,10 @@ class BigCommerceProductVariantsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> Iterator[dict[str, Any]]:
         """Return an iterator for all variants of a product"""
-        return self._api.get_many(f'/catalog/products/{product_id}/variants', params=params, timeout=timeout)
+        return self._api.get_many(f'/catalog/products/{product_id}/variants', params=params, timeout=timeout, retries=retries)
 
     def get(
             self,
@@ -24,9 +25,10 @@ class BigCommerceProductVariantsV3API:
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Get a specific product variant by ID"""
-        return self._api.get(f'/catalog/products/{product_id}/variants/{variant_id}', params=params, timeout=timeout)
+        return self._api.get(f'/catalog/products/{product_id}/variants/{variant_id}', params=params, timeout=timeout, retries=retries)
 
     def create(
             self,
@@ -45,9 +47,10 @@ class BigCommerceProductVariantsV3API:
             data: dict[str, Any],
             *,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Update a specific product variant by its ID"""
-        return self._api.put(f'/catalog/products/{product_id}/variants/{variant_id}', data=data, timeout=timeout)
+        return self._api.put(f'/catalog/products/{product_id}/variants/{variant_id}', data=data, timeout=timeout, retries=retries)
 
     def delete(
             self,
@@ -55,6 +58,7 @@ class BigCommerceProductVariantsV3API:
             variant_id: int,
             *,
             timeout: float | None = None,
+            retries: int | None = None,
     ) -> dict[str, Any]:
         """Delete a specific product variant by its ID"""
-        return self._api.delete(f'/catalog/products/{product_id}/variants/{variant_id}', timeout=timeout)
+        return self._api.delete(f'/catalog/products/{product_id}/variants/{variant_id}', timeout=timeout, retries=retries)
