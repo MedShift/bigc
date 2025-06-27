@@ -18,11 +18,11 @@ MAX_V3_PAGE_SIZE = 250
 
 
 class BigCommerceRequestClient(ABC):
-    def __init__(self, store_hash: str, access_token: str, *, timeout: float | None = None, retries: int | None = None):
+    def __init__(self, store_hash: str, access_token: str, *, timeout: float | None = None, get_retries: int | None = None):
         self.store_hash = store_hash
         self.access_token = access_token
         self.timeout = timeout
-        self.retries = retries
+        self.get_retries = get_retries
 
     def request(
             self,
@@ -41,11 +41,11 @@ class BigCommerceRequestClient(ABC):
             headers = {}
         if timeout is None:
             timeout = self.timeout
-        if retries is None and method != 'POST':
-            if self.retries is None:
-                retries = 2 if method == 'GET' else 0
-            else:
-                retries = self.retries
+        if retries is None:
+            if method == 'GET':
+                retries = self.get_retries
+
+            retries = retries or 0
 
         self._validate_path(path)
         self._validate_retries(method, retries)
