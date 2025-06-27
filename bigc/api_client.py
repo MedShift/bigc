@@ -114,6 +114,7 @@ class BigCommerceRequestClient(ABC):
         page_size: int | None = None,
         params: dict[str, Any] | None = None,
         timeout: float | None = None,
+        retries: int | None = None,
     ) -> Iterator[Any]:
         """Make a request to a paginated BigCommerce API endpoint"""
         pass
