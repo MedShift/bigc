@@ -40,6 +40,7 @@ The following resources are currently supported:
 
 
 ### Direct API Access
+
 For resources or parameters that aren't officially supported yet, bigc also includes a flexible API client that can be used to make direct requests to the BigCommerce API.
 
 ```python
