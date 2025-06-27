@@ -1,38 +1,101 @@
 import itertools
 from abc import ABC, abstractmethod
-from collections.abc import Generator
-from typing import NoReturn, Optional
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+from typing import Any, Iterator, NoReturn
 
 import requests
 
-from bigc import exceptions
+from bigc.exceptions import (
+    BadGatewayError,
+    BigCommerceException,
+    BigCommerceNetworkError,
+    GatewayTimeoutError,
+    InternalServerError,
+    ServiceUnavailableError,
+)
 
 MAX_V2_PAGE_SIZE = 250
 MAX_V3_PAGE_SIZE = 250
 
 
 class BigCommerceRequestClient(ABC):
-    def __init__(self, store_hash: str, access_token: str, timeout: Optional[float] = None):
+    def __init__(
+            self,
+            store_hash: str,
+            access_token: str,
+            *,
+            timeout: float | None = None,
+            get_retries: int | None = None
+    ):
         self.store_hash = store_hash
         self.access_token = access_token
         self.timeout = timeout
+        self.get_retries = get_retries
 
-    def request(self, method: str, path: str, **kwargs):
-        """Make a request to the BigCommerce API (uses Requests internally)"""
-        kwargs['headers'] = self._get_standard_request_headers() | kwargs.get('headers', {})
-        kwargs.setdefault('timeout', self.timeout)
+    def request(
+            self,
+            method: str,
+            path: str,
+            *,
+            data: Any = None,
+            params: dict[str, Any] | None = None,
+            headers: dict[str, str] | None = None,
+            timeout: float | None = None,
+            retries: int | None = None,
+    ) -> Any:
+        method = method.upper()
 
-        try:
-            response = requests.request(method, self._prepare_url(path), **kwargs)
-        except requests.Timeout as exc:
-            raise exceptions.BigCommerceServerError('Request timed out') from exc
+        if headers is None:
+            headers = {}
+        if timeout is None:
+            timeout = self.timeout
+        if retries is None:
+            if method == 'GET':
+                retries = self.get_retries
 
-        if response.ok:
-            # Return None for empty responses instead of raising
-            return response.json() if response.text else None
-        else:
-            self._handle_error(response)
+            retries = retries or 0
+
+        self._validate_path(path)
+        self._validate_retries(method, retries)
+
+        url = self._prepare_url(path)
+        params = self._process_params(params)
+        headers = self._get_standard_request_headers() | headers
+
+        def perform_request() -> Any:
+            try:
+                response = requests.request(
+                    method,
+                    url,
+                    json=data,
+                    params=params,
+                    headers=headers,
+                    timeout=timeout,
+                )
+            except requests.Timeout as exc:
+                raise GatewayTimeoutError() from exc
+            except requests.RequestException as exc:
+                raise BigCommerceNetworkError() from exc
+
+            if response.ok:
+                # Return None for empty responses instead of raising
+                return response.json() if response.text else None
+            else:
+                self._handle_error_response(response)
+
+        last_exc: Exception | None = None
+        for _ in range(retries + 1):
+            try:
+                return perform_request()
+            except (
+                    InternalServerError,
+                    BadGatewayError,
+                    ServiceUnavailableError,
+                    GatewayTimeoutError,
+                    BigCommerceNetworkError,
+            ) as exc:
+                last_exc = exc
+
+        raise last_exc
 
     def get(self, *args, **kwargs):
         """Alias for ``request('GET', ...)``"""
@@ -51,7 +114,15 @@ class BigCommerceRequestClient(ABC):
         return self.request('DELETE', *args, **kwargs)
 
     @abstractmethod
-    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
+    def get_many(
+            self,
+            path: str,
+            *,
+            page_size: int | None = None,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+            retries: int | None = None,
+    ) -> Iterator[Any]:
         """Make a request to a paginated BigCommerce API endpoint"""
         pass
 
@@ -59,7 +130,23 @@ class BigCommerceRequestClient(ABC):
     def _prepare_url(self, path: str) -> str:
         pass
 
-    def _get_standard_request_headers(self) -> dict:
+    @staticmethod
+    def _validate_path(path: str) -> None:
+        if '?' in path:
+            raise ValueError('path should not contain query parameters')
+
+        if '#' in path:
+            raise ValueError('path should not contain fragment')
+
+    @staticmethod
+    def _validate_retries(method: str, retries: int) -> None:
+        if retries < 0:
+            raise ValueError('retries must be 0 or greater')
+
+        if method == 'POST' and retries:
+            raise ValueError('POST requests cannot be safely retried')
+
+    def _get_standard_request_headers(self) -> dict[str, str]:
         return {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -67,36 +154,32 @@ class BigCommerceRequestClient(ABC):
         }
 
     @staticmethod
-    def _handle_error(response: requests.Response) -> NoReturn:
-        # TODO: Try to extract an error message from the response body
+    def _process_params(params: dict[str, Any] | None) -> dict[str, str] | None:
+        if not params:
+            return None
 
-        # Specific errors
-        if response.status_code == 400:
-            raise exceptions.BadRequestError(response=response)
-        if response.status_code == 401:
-            raise exceptions.InvalidAuthorizationError(response=response)
-        if response.status_code == 403:
-            raise exceptions.InsufficientScopesError(response=response)
-        if response.status_code == 404:
-            raise exceptions.ResourceNotFoundError(response=response)
-        if response.status_code == 429:
-            raise exceptions.RateLimitExceededError(response=response)
-        if response.status_code == 500:
-            raise exceptions.InternalBigCommerceError(response=response)
-        if response.status_code == 503:
-            raise exceptions.StoreUnavailableError(response=response)
-        if response.status_code == 507:
-            raise exceptions.PlanLimitExceededError(response=response)
+        def _process_param(value: Any) -> str:
+            if isinstance(value, list | tuple | set):
+                return ','.join(map(str, value))
 
-        # General errors
-        if 300 <= response.status_code < 400:
-            raise exceptions.BigCommerceRedirectionError(response=response)
-        if 400 <= response.status_code < 500:
-            raise exceptions.BigCommerceClientError(response=response)
-        if 500 <= response.status_code < 600:
-            raise exceptions.BigCommerceServerError(response=response)
+            return str(value)
 
-        raise exceptions.BigCommerceAPIException(response=response)
+        return {k: _process_param(v) for k, v in params.items()}
+
+    @staticmethod
+    def _handle_error_response(response: requests.Response) -> NoReturn:
+        try:
+            message, errors = BigCommerceException.extract_error_message(response.json())
+        except requests.JSONDecodeError:
+            message, errors = None, None
+
+        exc_class = BigCommerceException.get_exc_class_for_status_code(response.status_code)
+        raise exc_class(
+            message=message,
+            status_code=response.status_code,
+            response=response,
+            errors=errors,
+        )
 
 
 class BigCommerceV2APIClient(BigCommerceRequestClient):
@@ -105,22 +188,28 @@ class BigCommerceV2APIClient(BigCommerceRequestClient):
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v2/{path.lstrip('/')}"
 
-    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
+    def get_many(
+            self,
+            path: str,
+            *,
+            page_size: int | None = None,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+            retries: int | None = None,
+    ) -> Iterator[Any]:
         page_size = MAX_V2_PAGE_SIZE if page_size is None else int(page_size)
 
-        url_parts = urlparse(path)
-        query_dict = parse_qs(url_parts.query)
+        params = {**params} if params else {}
 
-        if 'limit' in query_dict or 'page' in query_dict:
-            raise ValueError('path already has pagination query params')
+        if params.keys() & {'limit', 'offset'}:
+            raise ValueError('params already has pagination values (limit and/or offset)')
 
-        query_dict['limit'] = [str(page_size)]
+        params['limit'] = page_size
 
         for cur_page in itertools.count(1):
-            query_dict['page'] = [str(cur_page)]
-            paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
+            params['page'] = cur_page
 
-            res_data = super().get(urlunparse(paged_url_parts), **kwargs)
+            res_data = super().get(path, params=params, timeout=timeout, retries=retries)
 
             # The API returns HTTP 204 (empty) past the last page
             if res_data is None:
@@ -142,29 +231,31 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
     def _prepare_url(self, path: str) -> str:
         return f"https://api.bigcommerce.com/stores/{self.store_hash}/v3/{path.lstrip('/')}"
 
-    def request(self, method: str, path: str, **kwargs):
+    def request(self, *args, **kwargs):
         # v3 response bodies are boxed in the 'data' key
-        response = super().request(method, path, **kwargs)
+        response = super().request(*args, **kwargs)
         return None if response is None else response['data']
 
-    def get_many(self, path: str, *, page_size: Optional[int] = None, **kwargs) -> Generator:
-        page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
+    def _get_many_using_limit_offset(
+            self,
+            path: str,
+            *,
+            page_size: int,
+            params: dict[str, Any],
+            timeout: float | None,
+            retries: int | None = None,
+    ) -> Iterator[Any]:
+        if params.keys() & {'limit', 'offset'}:
+            raise ValueError('params already has pagination values (limit and/or offset)')
 
-        url_parts = urlparse(path)
-        query_dict = parse_qs(url_parts.query)
-
-        if 'limit' in query_dict or 'page' in query_dict:
-            raise ValueError('path already has pagination query params')
-
-        query_dict['limit'] = [str(page_size)]
+        params['limit'] = page_size
 
         cur_page = 1
         num_pages = 1  # Will be set to the right value in the loop
         while cur_page <= num_pages:
-            query_dict['page'] = [str(cur_page)]
-            paged_url_parts = url_parts._replace(query=urlencode(query_dict, doseq=True))
+            params['page'] = cur_page
 
-            res_data = super().request('GET', urlunparse(paged_url_parts), **kwargs)
+            res_data = super().request('GET', path, params=params, timeout=timeout, retries=retries)
 
             cur_page += 1
             num_pages = int(res_data['meta']['pagination']['total_pages'])
@@ -174,8 +265,60 @@ class BigCommerceV3APIClient(BigCommerceRequestClient):
 
             yield from res_data['data']
 
+    def _get_many_using_cursor(
+            self,
+            path: str,
+            *,
+            page_size: int,
+            params: dict[str, Any],
+            timeout: float | None,
+            retries: int | None = None,
+    ) -> Iterator[Any]:
+        if params.keys() & {'limit', 'before', 'after'}:
+            raise ValueError('params already has pagination values (limit, before, and/or after)')
 
-class BigCommerceAPIClient:
-    def __init__(self, *args, **kwargs):
-        self.v2: BigCommerceV2APIClient = BigCommerceV2APIClient(*args, **kwargs)
-        self.v3: BigCommerceV3APIClient = BigCommerceV3APIClient(*args, **kwargs)
+        params['limit'] = page_size
+
+        while True:
+            response = super().request('GET', path, params=params, timeout=timeout, retries=retries)
+
+            yield from response['data']
+
+            if not (
+                    # end_cursor will still be provided if the next page is empty
+                    response['meta']['cursor_pagination']['links'].get('next')
+                    and response['data']
+            ):
+                break
+
+            params['after'] = response['meta']['cursor_pagination']['end_cursor']
+
+    def get_many(
+            self,
+            path: str,
+            *,
+            page_size: int | None = None,
+            params: dict[str, Any] | None = None,
+            timeout: float | None = None,
+            retries: int | None = None,
+            cursor: bool = False,
+    ) -> Iterator[Any]:
+        page_size = MAX_V3_PAGE_SIZE if page_size is None else int(page_size)
+        params = {**params} if params else {}
+
+        if cursor:
+            return self._get_many_using_cursor(
+                path,
+                page_size=page_size,
+                params=params,
+                timeout=timeout,
+                retries=retries,
+            )
+        else:
+            return self._get_many_using_limit_offset(
+                path,
+                page_size=page_size,
+                params=params,
+                timeout=timeout,
+                retries=retries,
+            )
