@@ -49,9 +49,10 @@ class TestRequest:
 
         assert request_mock.call_count == 3
 
-    def test_retry_eventually_succeeds(self, request_mock, dummy_request_client):
+    @pytest.mark.parametrize('retries', [2, 3])
+    def test_retry_eventually_succeeds(self, request_mock, dummy_request_client, retries):
         request_mock.side_effect = (requests.RequestException(), requests.RequestException(), request_mock.return_value)
 
-        dummy_request_client.request('GET', '/test', retries=2)
+        dummy_request_client.request('GET', '/test', retries=retries)
 
         assert request_mock.call_count == 3
