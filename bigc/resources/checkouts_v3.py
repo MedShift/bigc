@@ -56,10 +56,10 @@ class BigCommerceCheckoutsV3API:
         """Update an existing billing address on a checkout"""
         return self._api.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', data=data, timeout=timeout, retries=retries)
 
-    def add_consignment(
+    def add_consignments(
             self,
             checkout_id: UUIDLike,
-            data: dict[str, Any],
+            data: list[dict[str, Any]],
             *,
             params: dict[str, Any] | None = None,
             timeout: float | None = None,
