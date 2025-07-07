@@ -26,21 +26,23 @@ class BigCommerceCheckoutsV3API:
             checkout_id: UUIDLike,
             data: dict[str, Any],
             *,
+            params: dict[str, Any] | None = None,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
         """Change customer message pertaining to an existing Checkout"""
-        return self._api.put(f'/checkouts/{checkout_id}', data=data, timeout=timeout, retries=retries)
+        return self._api.put(f'/checkouts/{checkout_id}', data=data, params=params, timeout=timeout, retries=retries)
 
     def add_billing_address(
             self,
             checkout_id: UUIDLike,
             data: dict[str, Any],
             *,
+            params: dict[str, Any] | None = None,
             timeout: float | None = None,
     ) -> dict[str, Any]:
         """Add a billing address to an existing checkout"""
-        return self._api.post(f'/checkouts/{checkout_id}/billing-address', data=data, timeout=timeout)
+        return self._api.post(f'/checkouts/{checkout_id}/billing-address', data=data, params=params, timeout=timeout)
 
     def update_billing_address(
             self,
