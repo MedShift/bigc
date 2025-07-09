@@ -50,11 +50,12 @@ class BigCommerceCheckoutsV3API:
             address_id: str,
             data: dict[str, Any],
             *,
+            params: dict[str, Any] | None = None,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
         """Update an existing billing address on a checkout"""
-        return self._api.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', data=data, timeout=timeout, retries=retries)
+        return self._api.put(f'/checkouts/{checkout_id}/billing-address/{address_id}', data=data, params=params, timeout=timeout, retries=retries)
 
     def add_consignments(
             self,
