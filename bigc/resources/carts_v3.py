@@ -36,11 +36,12 @@ class BigCommerceCartsV3API:
             cart_id: UUIDLike,
             data: dict[str, Any],
             *,
+            params: dict[str, Any] | None = None,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
         """Update a specific cart by its ID"""
-        return self._api.put(f'/carts/{cart_id}', data=data, timeout=timeout, retries=retries)
+        return self._api.put(f'/carts/{cart_id}', data=data, params=params, timeout=timeout, retries=retries)
 
     def delete(self, cart_id: UUIDLike, *, timeout: float | None = None, retries: int | None = None) -> None:
         """Delete a specific cart by its ID"""
