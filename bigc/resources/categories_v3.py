@@ -21,7 +21,7 @@ class BigCommerceCategoriesV3API:
         """Get a specific category by its ID"""
         return self._api.get(f'/catalog/categories/{category_id}', timeout=timeout, retries=retries)
 
-    def create(self, data: dict[str, Any], timeout: float | None = None) -> dict[str, Any]:
+    def create(self, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Create a category"""
         return self._api.post('/catalog/categories', data=data, timeout=timeout)
 
@@ -29,6 +29,7 @@ class BigCommerceCategoriesV3API:
             self,
             category_id: int,
             data: dict[str, Any],
+            *,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
