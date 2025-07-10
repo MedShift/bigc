@@ -167,14 +167,15 @@ class BigCommerceCustomersV3API:
 
     def update_address(
             self,
+            address_id: int,
             data: dict[str, Any],
             *,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
-        """Update an address"""
+        """Update an address by its ID"""
         try:
-            return self.update_addresses([data], timeout=timeout, retries=retries)[0]
+            return self.update_addresses([{'id': address_id, **data}], timeout=timeout, retries=retries)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
