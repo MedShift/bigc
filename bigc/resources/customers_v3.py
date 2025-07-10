@@ -148,10 +148,10 @@ class BigCommerceCustomersV3API:
         """Create many addresses"""
         return self._api.post('/customers/addresses', data=data, timeout=timeout)
 
-    def create_address(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+    def create_address(self, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Add an address to the customer's address book"""
         try:
-            return self.create_addresses([{'customer_id': customer_id, **data}], timeout=timeout)[0]
+            return self.create_addresses([data], timeout=timeout)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
@@ -167,15 +167,14 @@ class BigCommerceCustomersV3API:
 
     def update_address(
             self,
-            address_id: int,
             data: dict[str, Any],
             *,
             timeout: float | None = None,
             retries: int | None = None,
     ) -> dict[str, Any]:
-        """Update an address by its ID"""
+        """Update an address"""
         try:
-            return self.update_addresses([{'id': address_id, **data}], timeout=timeout, retries=retries)[0]
+            return self.update_addresses([data], timeout=timeout, retries=retries)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
