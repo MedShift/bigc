@@ -127,7 +127,6 @@ class BigCommerceCustomersV3API:
 
     def get_address(
             self,
-            customer_id: int,
             address_id: int,
             *,
             params: dict[str, Any] | None = None,
@@ -137,7 +136,6 @@ class BigCommerceCustomersV3API:
         """Get one address by its ID, from a customer's address book"""
         params = {
             **(params or {}),
-            'customer_id:in': customer_id,
             'id:in': address_id,
         }
 
@@ -150,10 +148,10 @@ class BigCommerceCustomersV3API:
         """Create many addresses"""
         return self._api.post('/customers/addresses', data=data, timeout=timeout)
 
-    def create_address(self, customer_id: int, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
+    def create_address(self, data: dict[str, Any], *, timeout: float | None = None) -> dict[str, Any]:
         """Add an address to the customer's address book"""
         try:
-            return self.create_addresses([{'customer_id': customer_id, **data}], timeout=timeout)[0]
+            return self.create_addresses([data], timeout=timeout)[0]
         except IndexError:
             raise InvalidDataError('This address already exists.') from None
 
