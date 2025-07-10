@@ -127,7 +127,6 @@ class BigCommerceCustomersV3API:
 
     def get_address(
             self,
-            customer_id: int,
             address_id: int,
             *,
             params: dict[str, Any] | None = None,
@@ -137,7 +136,6 @@ class BigCommerceCustomersV3API:
         """Get one address by its ID, from a customer's address book"""
         params = {
             **(params or {}),
-            'customer_id:in': customer_id,
             'id:in': address_id,
         }
 
