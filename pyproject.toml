@@ -1,6 +1,6 @@
 [project]
 name = "bigc"
-version = "1.0.0b3"
+version = "1.0.0b4"
 description = "Unofficial client for the BigCommerce API"
 license = { text = "MIT" }
 readme = "README.md"
