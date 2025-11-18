@@ -94,3 +94,18 @@ Some extra utility functions that don't interact with the BigCommerce API are av
 For convenience, some constants are made available in `bigc.data`.
 
 - `bigc.data.BigCommerceOrderStatus`: An `IntEnum` of order statuses and their IDs
+
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
+
+### Setup
+
+1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
+2. Run `uv sync` to install dependencies and set up a virtual environment
+
+### Running Tests
+
+```shell
+uv run pytest
+```
