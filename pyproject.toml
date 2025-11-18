@@ -33,7 +33,7 @@ repository = "https://github.com/MedShift/bigc.git"
 
 [dependency-groups]
 dev = [
-    "pytest~=7.1",
+    "pytest>=7.1,<10.0",
 ]
 
 [build-system]
