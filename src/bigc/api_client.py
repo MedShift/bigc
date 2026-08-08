@@ -24,12 +24,14 @@ class BigCommerceRequestClient(ABC):
             access_token: str,
             *,
             timeout: float | None = None,
-            get_retries: int | None = None
+            get_retries: int | None = None,
+            session: requests.Session | None = None,
     ):
         self.store_hash = store_hash
         self.access_token = access_token
         self.timeout = timeout
         self.get_retries = get_retries
+        self.session = session or requests.Session()
 
     def request(
             self,
@@ -63,7 +65,7 @@ class BigCommerceRequestClient(ABC):
 
         def perform_request() -> Any:
             try:
-                response = requests.request(
+                response = self.session.request(
                     method,
                     url,
                     json=data,

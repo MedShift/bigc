@@ -1,3 +1,5 @@
+import requests
+
 from bigc.api_client import BigCommerceV2APIClient, BigCommerceV3APIClient
 from bigc.resources import *
 
@@ -9,10 +11,17 @@ class BigCommerceAPI:
             access_token: str,
             *,
             timeout: float | None = None,
-            get_retries: int | None = None
+            get_retries: int | None = None,
+            session: requests.Session | None = None,
     ):
-        api_v2 = BigCommerceV2APIClient(store_hash, access_token, timeout=timeout, get_retries=get_retries)
-        api_v3 = BigCommerceV3APIClient(store_hash, access_token, timeout=timeout, get_retries=get_retries)
+        self.session = session or requests.Session()
+
+        api_v2 = BigCommerceV2APIClient(
+            store_hash, access_token, timeout=timeout, get_retries=get_retries, session=self.session,
+        )
+        api_v3 = BigCommerceV3APIClient(
+            store_hash, access_token, timeout=timeout, get_retries=get_retries, session=self.session,
+        )
 
         self.api_v2 = api_v2
         self.api_v3 = api_v3

@@ -33,7 +33,8 @@ def request_mock(monkeypatch):
     mock_response = create_autospec(requests.Response)()
 
     monkeypatch.setattr(
-        'bigc.api_client.requests.request',
+        requests.Session,
+        'request',
         mock := MagicMock(return_value=mock_response),
     )
 
