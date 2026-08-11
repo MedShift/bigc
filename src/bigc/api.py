@@ -1,4 +1,4 @@
-import requests
+import threading
 
 from bigc.api_client import BigCommerceV2APIClient, BigCommerceV3APIClient
 from bigc.resources import *
@@ -11,16 +11,16 @@ class BigCommerceAPI:
             access_token: str,
             *,
             timeout: float | None = None,
-            get_retries: int | None = None,
-            session: requests.Session | None = None,
+            get_retries: int | None = None
     ):
-        self.session = session or requests.Session()
+        # Shared so that both API versions use the same pool within a thread
+        thread_local = threading.local()
 
         api_v2 = BigCommerceV2APIClient(
-            store_hash, access_token, timeout=timeout, get_retries=get_retries, session=self.session,
+            store_hash, access_token, timeout=timeout, get_retries=get_retries, _thread_local=thread_local,
         )
         api_v3 = BigCommerceV3APIClient(
-            store_hash, access_token, timeout=timeout, get_retries=get_retries, session=self.session,
+            store_hash, access_token, timeout=timeout, get_retries=get_retries, _thread_local=thread_local,
         )
 
         self.api_v2 = api_v2

@@ -70,13 +70,9 @@ bigcommerce.customers_v3.get(1, retries=5)
 
 ### Connection Pooling
 
-Requests are made through a [`requests.Session`], so connections are pooled and reused instead of reopened for each request. This needs no setup, and applies across both the v2 and v3 APIs, which share one session.
+Connections are pooled and reused instead of reopened for each request. This needs no setup, and applies across both the v2 and v3 APIs.
 
-The pool belongs to the `BigCommerceAPI` instance, so reuse a single instance rather than creating one per request. A `requests.Session` is not thread-safe, so each thread should use its own instance.
-
-The session is exposed as `bigcommerce.session` if you need to configure it, e.g. to `mount()` an adapter with a larger `pool_maxsize`. To reuse a session your application has already configured, pass it as `session`.
-
-[`requests.Session`]: https://requests.readthedocs.io/en/latest/user/advanced/#session-objects
+The pool belongs to the `BigCommerceAPI` instance, so reuse a single instance rather than creating one per request. Instances are safe to share between threads, and each thread gets its own pool.
 
 ### Direct API Access
 
