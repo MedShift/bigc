@@ -1,4 +1,5 @@
 import itertools
+import threading
 from abc import ABC, abstractmethod
 from typing import Any, Iterator, NoReturn
 
@@ -24,12 +25,27 @@ class BigCommerceRequestClient(ABC):
             access_token: str,
             *,
             timeout: float | None = None,
-            get_retries: int | None = None
+            get_retries: int | None = None,
+            _thread_local: threading.local | None = None,
     ):
         self.store_hash = store_hash
         self.access_token = access_token
         self.timeout = timeout
         self.get_retries = get_retries
+        self._thread_local = _thread_local or threading.local()
+
+    @property
+    def _session(self) -> requests.Session:
+        """A session for the current thread
+
+        Sessions pool connections, but aren't thread-safe, so each thread gets
+        its own. Clients sharing a thread-local share a pool.
+        """
+        try:
+            return self._thread_local.session
+        except AttributeError:
+            self._thread_local.session = requests.Session()
+            return self._thread_local.session
 
     def request(
             self,
@@ -63,7 +79,7 @@ class BigCommerceRequestClient(ABC):
 
         def perform_request() -> Any:
             try:
-                response = requests.request(
+                response = self._session.request(
                     method,
                     url,
                     json=data,

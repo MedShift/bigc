@@ -68,6 +68,12 @@ bigcommerce = BigCommerceAPI('store_hash', 'access_token', get_retries=2)
 bigcommerce.customers_v3.get(1, retries=5)
 ```
 
+### Connection Pooling
+
+Connections are pooled and reused instead of reopened for each request. This needs no setup, and applies across both the v2 and v3 APIs.
+
+The pool belongs to the `BigCommerceAPI` instance, so reuse a single instance rather than creating one per request. Instances are safe to share between threads, and each thread gets its own pool.
+
 ### Direct API Access
 
 For resources that aren't officially supported yet, `bigc` also includes a flexible API client that can be used to make direct requests to the BigCommerce API.
