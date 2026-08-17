@@ -13,7 +13,10 @@ class TestSession:
         api = BigCommerceAPI('store_hash', 'access_token')
         sessions = []
 
-        threads = [threading.Thread(target=lambda: sessions.append(api.api_v2._session)) for _ in range(8)]
+        threads = [
+            threading.Thread(target=lambda: sessions.append(api.api_v2._session))
+            for _ in range(8)
+        ]
         for thread in threads:
             thread.start()
         for thread in threads:

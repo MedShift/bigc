@@ -1,5 +1,6 @@
-from typing import Any, Iterator
-from unittest.mock import create_autospec, MagicMock, Mock
+from collections.abc import Iterator
+from typing import Any
+from unittest.mock import MagicMock, create_autospec
 
 import pytest
 import requests
@@ -20,7 +21,9 @@ class DummyBigCommerceRequestClient(BigCommerceRequestClient):
         raise NotImplementedError
 
     def _prepare_url(self, path: str) -> str:
-        return f'https://api.example.com/stores/{self.store_hash}/test/{path.lstrip("/")}'
+        return (
+            f'https://api.example.com/stores/{self.store_hash}/test/{path.lstrip("/")}'
+        )
 
 
 @pytest.fixture
@@ -42,7 +45,9 @@ def request_mock(monkeypatch):
 
 
 class TestRequest:
-    def test_retry_for_always_failing_endpoint(self, request_mock, dummy_request_client):
+    def test_retry_for_always_failing_endpoint(
+        self, request_mock, dummy_request_client
+    ):
         request_mock.side_effect = requests.RequestException()
 
         with pytest.raises(BigCommerceNetworkError):
@@ -51,8 +56,14 @@ class TestRequest:
         assert request_mock.call_count == 3
 
     @pytest.mark.parametrize('retries', [2, 3])
-    def test_retry_eventually_succeeds(self, request_mock, dummy_request_client, retries):
-        request_mock.side_effect = (requests.RequestException(), requests.RequestException(), request_mock.return_value)
+    def test_retry_eventually_succeeds(
+        self, request_mock, dummy_request_client, retries
+    ):
+        request_mock.side_effect = (
+            requests.RequestException(),
+            requests.RequestException(),
+            request_mock.return_value,
+        )
 
         dummy_request_client.request('GET', '/test', retries=retries)
 
