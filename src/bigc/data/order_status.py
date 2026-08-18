@@ -4,6 +4,7 @@ from enum import IntEnum, unique
 @unique
 class BigCommerceOrderStatus(IntEnum):
     """Enum mapping BigCommerce order statuses to their IDs"""
+
     INCOMPLETE = 0
     PENDING = 1
     SHIPPED = 2

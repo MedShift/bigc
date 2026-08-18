@@ -12,11 +12,13 @@ class BigCommerceException(Exception):
     DEFAULT_MESSAGE: ClassVar[str] = 'Request to BigCommerce failed.'
     STATUS_CODE: ClassVar[int | None] = None
 
-    def __init__(self,
-                 message: str | None = None,
-                 status_code: int | None = None,
-                 response: Any = None,
-                 errors: dict[str, str] | None = None):
+    def __init__(
+        self,
+        message: str | None = None,
+        status_code: int | None = None,
+        response: Any = None,
+        errors: dict[str, str] | None = None,
+    ):
         """
         :param message: A short description of the error's cause.
         :param status_code: The HTTP status code of the API response.
@@ -39,9 +41,8 @@ class BigCommerceException(Exception):
         super().__init_subclass__(**kwargs)
 
         # Only include subclasses defined in this file
-        if inspect.getmodule(cls).__name__ == __name__:
-            if cls.STATUS_CODE is not None:
-                _status_code_exc_class_map[cls.STATUS_CODE] = cls
+        if inspect.getmodule(cls).__name__ == __name__ and cls.STATUS_CODE is not None:
+            _status_code_exc_class_map[cls.STATUS_CODE] = cls
 
     @staticmethod
     def get_exc_class_for_status_code(status_code: int) -> type[BigCommerceException]:
@@ -55,7 +56,9 @@ class BigCommerceException(Exception):
             return BigCommerceException
 
     @staticmethod
-    def extract_error_message(response_data: object) -> tuple[str | None, dict[str, str] | None]:
+    def extract_error_message(
+        response_data: object,
+    ) -> tuple[str | None, dict[str, str] | None]:
         message: str | None = None
         errors: dict[str, str] | None = None
 
@@ -154,22 +157,22 @@ class BigCommerceNetworkError(BigCommerceException):
 
 
 __all__ = (
-    'BigCommerceException',
-    'BigCommerceClientError',
-    'BadRequestError',
-    'UnauthorizedError',
-    'ForbiddenError',
-    'DoesNotExistError',
-    'ConflictError',
-    'EntityTooLargeError',
-    'InvalidDataError',
-    'LockedError',
-    'TooManyRequestsError',
-    'BigCommerceServerError',
-    'InternalServerError',
     'BadGatewayError',
-    'ServiceUnavailableError',
+    'BadRequestError',
+    'BigCommerceClientError',
+    'BigCommerceException',
+    'BigCommerceNetworkError',
+    'BigCommerceServerError',
+    'ConflictError',
+    'DoesNotExistError',
+    'EntityTooLargeError',
+    'ForbiddenError',
     'GatewayTimeoutError',
     'InsufficientStorageError',
-    'BigCommerceNetworkError',
+    'InternalServerError',
+    'InvalidDataError',
+    'LockedError',
+    'ServiceUnavailableError',
+    'TooManyRequestsError',
+    'UnauthorizedError',
 )

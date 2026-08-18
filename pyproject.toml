@@ -2,7 +2,8 @@
 name = "bigc"
 version = "1.0.0"
 description = "Unofficial client for the BigCommerce API"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE.txt"]
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
@@ -15,7 +16,6 @@ keywords = ["bigcommerce", "api", "client"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -34,8 +34,18 @@ repository = "https://github.com/MedShift/bigc.git"
 [dependency-groups]
 dev = [
     "pytest~=7.1",
+    "ruff==0.16.3",
 ]
 
 [build-system]
-requires = ["uv_build>=0.9.5,<0.10.0"]
+requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401",
+]
+
+[tool.ruff.format]
+line-ending = "lf"
+quote-style = "single"
